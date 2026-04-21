@@ -11,7 +11,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== БАЗОВЫЕ ПЕРЕМЕННЫЕ ===== */
+        /* ===== БАЗОВЫЕ ПЕРЕМЕННЫЕ (СВЕТЛАЯ ТЕМА) ===== */
         :root {
             --bg-primary: #f5f7fa;
             --bg-secondary: #ffffff;
@@ -54,6 +54,7 @@
             --modal-overlay: rgba(0, 0, 0, 0.5);
         }
 
+        /* ===== ТЁМНАЯ ТЕМА ===== */
         [data-theme="dark"] {
             --bg-primary: #0f172a;
             --bg-secondary: #1e293b;
@@ -198,7 +199,6 @@
             color: var(--gradient-start);
         }
 
-        /* Бейдж корзины */
         .cart-badge {
             position: absolute;
             top: -8px;
@@ -503,6 +503,11 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+        }
+
+        .search-btn:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
         }
 
         /* ===== HERO ===== */
@@ -882,9 +887,7 @@
             <h3>Корзина</h3>
             <button class="cart-close" id="closeCartModal"><i class="fas fa-times"></i></button>
         </div>
-        <div class="cart-items" id="cartItemsContainer">
-            <!-- Содержимое корзины будет здесь -->
-        </div>
+        <div class="cart-items" id="cartItemsContainer"></div>
         <div class="cart-footer" id="cartFooter" style="display: none;">
             <div class="cart-total">
                 <span>Итого:</span>
@@ -936,7 +939,7 @@
 
         <section id="catalog">
             <div class="section-header">
-                <h2>Каталог товаров</h2>
+                <h2 style="font-size: 32px; font-weight: 700; color: var(--heading-color); margin-bottom: 10px;">Каталог товаров</h2>
             </div>
             
             <div class="products-count" id="productsCount">Показано товаров: <span id="countValue">0</span></div>
@@ -986,8 +989,9 @@
 
 <script>
     (function() {
-        // ===== БАЗА ТОВАРОВ =====
+        // ===== ПОЛНАЯ БАЗА ТОВАРОВ (64 позиции) =====
         const products = [
+            // Цемент и смеси (7)
             { id: 1, name: "Цемент 50кг", category: "cement", subcategory: "Цемент", price: 550, unit: "шт", desc: "Портландцемент М500, 50 кг", image: "" },
             { id: 2, name: "Цемент 25кг", category: "cement", subcategory: "Цемент", price: 285, unit: "шт", desc: "Портландцемент М500, 25 кг", image: "" },
             { id: 3, name: "Клей для газоблока", category: "cement", subcategory: "Смеси", price: 240, unit: "шт", desc: "Специальный клей для газобетонных блоков", image: "" },
@@ -995,11 +999,72 @@
             { id: 5, name: "ЦПС М200", category: "cement", subcategory: "Смеси", price: 210, unit: "шт", desc: "Цементно-песчаная смесь М200", image: "" },
             { id: 6, name: "ЦПС М300", category: "cement", subcategory: "Смеси", price: 260, unit: "шт", desc: "Цементно-песчаная смесь М300", image: "" },
             { id: 7, name: "Шпаклёвка LR финишная", category: "cement", subcategory: "Смеси", price: 430, unit: "шт", desc: "Финишная шпаклёвка, высокое качество", image: "" },
+            
+            // Кольца ЖБИ (18)
             { id: 8, name: "Кольцо 0.8м", category: "rings", subcategory: "Кольца ЖБИ", price: 2600, unit: "шт", desc: "Железобетонное кольцо, диаметр 0.8 м", image: "" },
             { id: 9, name: "Кольцо 1м", category: "rings", subcategory: "Кольца ЖБИ", price: 2700, unit: "шт", desc: "Железобетонное кольцо, диаметр 1 м", image: "" },
-            { id: 10, name: "Кирпич облицовочный красный", category: "bricks", subcategory: "Кирпич", price: 26, unit: "шт", desc: "Кирпич облицовочный красный", image: "" },
-            { id: 11, name: "Газоблок 600x200x300", category: "bricks", subcategory: "Блоки", price: 220, unit: "шт", desc: "Газобетонный блок 600x200x300 мм", image: "" },
-            { id: 12, name: "Брус 150x150x6м", category: "wood", subcategory: "Брус", price: 2100, unit: "шт", desc: "Брус 150x150x6м, 1 сорт", image: "" },
+            { id: 10, name: "Кольцо 1.5м (в.0.8)", category: "rings", subcategory: "Кольца ЖБИ", price: 5300, unit: "шт", desc: "Кольцо ЖБИ 1.5 м, высота 0.8 м", image: "" },
+            { id: 11, name: "Кольцо 1.5м (в.0.9)", category: "rings", subcategory: "Кольца ЖБИ", price: 5500, unit: "шт", desc: "Кольцо ЖБИ 1.5 м, высота 0.9 м", image: "" },
+            { id: 12, name: "Кольцо 2.0м (в.0.9)", category: "rings", subcategory: "Кольца ЖБИ", price: 10000, unit: "шт", desc: "Кольцо ЖБИ 2.0 м, высота 0.9 м", image: "" },
+            { id: 13, name: "Половинка кольца 1м", category: "rings", subcategory: "Кольца ЖБИ", price: 2200, unit: "шт", desc: "Половинка железобетонного кольца 1 м", image: "" },
+            { id: 14, name: "Половинка кольца 1.5м", category: "rings", subcategory: "Кольца ЖБИ", price: 4200, unit: "шт", desc: "Половинка железобетонного кольца 1.5 м", image: "" },
+            { id: 15, name: "Крышка с люком 0.8м", category: "rings", subcategory: "Крышки и днища", price: 3500, unit: "шт", desc: "Крышка с люком для кольца 0.8 м", image: "" },
+            { id: 16, name: "Крышка с люком 1м", category: "rings", subcategory: "Крышки и днища", price: 3700, unit: "шт", desc: "Крышка с люком для кольца 1 м", image: "" },
+            { id: 17, name: "Крышка с люком 1.5м", category: "rings", subcategory: "Крышки и днища", price: 6000, unit: "шт", desc: "Крышка с люком для кольца 1.5 м", image: "" },
+            { id: 18, name: "Крышка без люка 1.5м", category: "rings", subcategory: "Крышки и днища", price: 5500, unit: "шт", desc: "Крышка без люка для кольца 1.5 м", image: "" },
+            { id: 19, name: "Крышка с люком 2.0м", category: "rings", subcategory: "Крышки и днища", price: 10000, unit: "шт", desc: "Крышка с люком для кольца 2.0 м", image: "" },
+            { id: 20, name: "Донышко 0.8м", category: "rings", subcategory: "Крышки и днища", price: 2000, unit: "шт", desc: "Днище для кольца 0.8 м", image: "" },
+            { id: 21, name: "Донышко 1м", category: "rings", subcategory: "Крышки и днища", price: 2200, unit: "шт", desc: "Днище для кольца 1 м", image: "" },
+            { id: 22, name: "Донышко 1.5м", category: "rings", subcategory: "Крышки и днища", price: 4000, unit: "шт", desc: "Днище для кольца 1.5 м", image: "" },
+            { id: 23, name: "Конус люк 1м", category: "rings", subcategory: "Крышки и днища", price: 2200, unit: "шт", desc: "Конус с люком 1 м", image: "" },
+            { id: 24, name: "Люк газонный", category: "rings", subcategory: "Крышки и днища", price: 700, unit: "шт", desc: "Газонный люк", image: "" },
+            
+            // Плитка и брусчатка (17)
+            { id: 25, name: "Плитка серая 30x30", category: "tiles", subcategory: "Плитка", price: 550, unit: "м²", desc: "Тротуарная плитка серая, 30x30 см", image: "" },
+            { id: 26, name: "Плитка красная 30x30", category: "tiles", subcategory: "Плитка", price: 750, unit: "м²", desc: "Тротуарная плитка красная, 30x30 см", image: "" },
+            { id: 27, name: "Плитка серая 40x40", category: "tiles", subcategory: "Плитка", price: 140, unit: "шт", desc: "Плитка серая 40x40 см, цена за штуку", image: "" },
+            { id: 28, name: "Плитка красная 40x40", category: "tiles", subcategory: "Плитка", price: 200, unit: "шт", desc: "Плитка красная 40x40 см, цена за штуку", image: "" },
+            { id: 29, name: "Плитка 30x30 (брак)", category: "tiles", subcategory: "Плитка", price: 400, unit: "м²", desc: "Плитка 30x30 см, 2 сорт (брак)", image: "" },
+            { id: 30, name: "Плитка 40x40 (брак)", category: "tiles", subcategory: "Плитка", price: 90, unit: "шт", desc: "Плитка 40x40 см, 2 сорт (брак)", image: "" },
+            { id: 31, name: "Бордюр вибролитьё 1м", category: "tiles", subcategory: "Бордюры", price: 250, unit: "шт", desc: "Бордюр вибролитьевой, 1 метр", image: "" },
+            { id: 32, name: "Бордюр вибролитьё 1м красный", category: "tiles", subcategory: "Бордюры", price: 400, unit: "шт", desc: "Бордюр вибролитьевой красный, 1 метр", image: "" },
+            { id: 33, name: "Бордюр вибропресс 1м", category: "tiles", subcategory: "Бордюры", price: 300, unit: "шт", desc: "Бордюр вибропрессованный, 1 метр", image: "" },
+            { id: 34, name: "Бордюр вибролитьё 0.5м", category: "tiles", subcategory: "Бордюры", price: 150, unit: "шт", desc: "Бордюр вибролитьевой, 0.5 метра", image: "" },
+            { id: 35, name: "Слив", category: "tiles", subcategory: "Бордюры", price: 150, unit: "шт", desc: "Слив водосточный бетонный", image: "" },
+            { id: 36, name: "Дорожный бордюр 1м", category: "tiles", subcategory: "Бордюры", price: 700, unit: "шт", desc: "Бордюр дорожный, 1 метр", image: "" },
+            { id: 37, name: "Брусчатка 4см", category: "tiles", subcategory: "Брусчатка", price: 1000, unit: "м²", desc: "Брусчатка серая, толщина 4 см, 50 шт/м²", image: "" },
+            { id: 38, name: "Брусчатка 6см", category: "tiles", subcategory: "Брусчатка", price: 1200, unit: "м²", desc: "Брусчатка серая, толщина 6 см, 50 шт/м²", image: "" },
+            { id: 39, name: "Брусчатка красная 4см", category: "tiles", subcategory: "Брусчатка", price: 1400, unit: "м²", desc: "Брусчатка красная, толщина 4 см", image: "" },
+            { id: 40, name: "Брусчатка коричневая 4см", category: "tiles", subcategory: "Брусчатка", price: 1400, unit: "м²", desc: "Брусчатка коричневая, толщина 4 см", image: "" },
+            { id: 41, name: "Брусчатка жёлтая 4см", category: "tiles", subcategory: "Брусчатка", price: 1500, unit: "м²", desc: "Брусчатка жёлтая, толщина 4 см", image: "" },
+            
+            // Кирпич и блоки (8)
+            { id: 42, name: "Кирпич одинарный трубный", category: "bricks", subcategory: "Кирпич", price: 22, unit: "шт", desc: "Кирпич трубный одинарный, 448 шт в пачке", image: "" },
+            { id: 43, name: "Кирпич одинарный полнотелый", category: "bricks", subcategory: "Кирпич", price: 23, unit: "шт", desc: "Кирпич полнотелый одинарный, 448 шт в пачке", image: "" },
+            { id: 44, name: "Кирпич полуторный трубный", category: "bricks", subcategory: "Кирпич", price: 25, unit: "шт", desc: "Кирпич трубный полуторный, 352 шт в пачке", image: "" },
+            { id: 45, name: "Кирпич полуторный щелевой", category: "bricks", subcategory: "Кирпич", price: 22, unit: "шт", desc: "Кирпич щелевой полуторный, 352 шт в пачке", image: "" },
+            { id: 46, name: "Кирпич облицовочный красный", category: "bricks", subcategory: "Кирпич", price: 26, unit: "шт", desc: "Кирпич облицовочный красный, 396 шт в пачке", image: "" },
+            { id: 47, name: "Кирпич облицовочный коричневый", category: "bricks", subcategory: "Кирпич", price: 40, unit: "шт", desc: "Кирпич облицовочный коричневый", image: "" },
+            { id: 48, name: "Газоблок 600x200x300", category: "bricks", subcategory: "Блоки", price: 220, unit: "шт", desc: "Газобетонный блок 600x200x300 мм", image: "" },
+            { id: 49, name: "Сетка 100x100 (2x1м)", category: "bricks", subcategory: "Сетка", price: 250, unit: "шт", desc: "Сетка кладочная, ячейка 100x100, 2x1 м", image: "" },
+            
+            // Пиломатериалы (8)
+            { id: 50, name: "Тёс 200x25x6м (2 сорт)", category: "wood", subcategory: "Доска", price: 485, unit: "шт", desc: "Тёс 200x25x6м, 2 сорт с обзолом, 33 шт/м³", image: "" },
+            { id: 51, name: "Тёс 150x25x6м (2 сорт)", category: "wood", subcategory: "Доска", price: 365, unit: "шт", desc: "Тёс 150x25x6м, 2 сорт с обзолом, 44 шт/м³", image: "" },
+            { id: 52, name: "Тёс 200x25x6м (1 сорт)", category: "wood", subcategory: "Доска", price: 450, unit: "шт", desc: "Тёс 200x25x6м, 1 сорт, 33 шт/м³", image: "" },
+            { id: 53, name: "Доска 150x50x6м", category: "wood", subcategory: "Доска", price: 860, unit: "шт", desc: "Доска обрезная 150x50x6м, 1 сорт", image: "" },
+            { id: 54, name: "Доска 200x50x6м", category: "wood", subcategory: "Доска", price: 1380, unit: "шт", desc: "Доска обрезная 200x50x6м, 1 сорт", image: "" },
+            { id: 55, name: "Брус 150x150x6м", category: "wood", subcategory: "Брус", price: 2100, unit: "шт", desc: "Брус 150x150x6м, 1 сорт", image: "" },
+            { id: 56, name: "Брус 150x100x6м", category: "wood", subcategory: "Брус", price: 950, unit: "шт", desc: "Брус 150x100x6м, 1 сорт", image: "" },
+            { id: 57, name: "Брус 100x50x6м", category: "wood", subcategory: "Брус", price: 575, unit: "шт", desc: "Брус 100x50x6м, 1 сорт", image: "" },
+            
+            // Трубы и комплектующие (6)
+            { id: 58, name: "Труба 3м", category: "pipes", subcategory: "Трубы", price: 1100, unit: "шт", desc: "Труба асбестоцементная, 3 метра", image: "" },
+            { id: 59, name: "Труба 2м", category: "pipes", subcategory: "Трубы", price: 750, unit: "шт", desc: "Труба асбестоцементная, 2 метра", image: "" },
+            { id: 60, name: "Труба 1м", category: "pipes", subcategory: "Трубы", price: 450, unit: "шт", desc: "Труба асбестоцементная, 1 метр", image: "" },
+            { id: 61, name: "Загиб 45°", category: "pipes", subcategory: "Комплектующие", price: 100, unit: "шт", desc: "Загиб (отвод) 45 градусов", image: "" },
+            { id: 62, name: "Загиб 90°", category: "pipes", subcategory: "Комплектующие", price: 100, unit: "шт", desc: "Загиб (отвод) 90 градусов", image: "" },
+            { id: 63, name: "Тройник", category: "pipes", subcategory: "Комплектующие", price: 180, unit: "шт", desc: "Тройник для труб", image: "" }
         ];
 
         // ===== КОРЗИНА =====
@@ -1012,7 +1077,7 @@
 
         function addToCart(productId) {
             const product = products.find(p => p.id === productId);
-            if (!product) return;
+            if (!product) return false;
 
             const existingItem = cart.find(item => item.id === productId);
             if (existingItem) {
@@ -1029,8 +1094,6 @@
                 });
             }
             saveCart();
-            
-            // Анимация добавления
             return true;
         }
 
@@ -1064,7 +1127,6 @@
             return cart.reduce((sum, item) => sum + item.quantity, 0);
         }
 
-        // ===== ОБНОВЛЕНИЕ UI КОРЗИНЫ =====
         function updateCartUI() {
             const badge = document.getElementById('cartBadge');
             const count = getCartCount();
@@ -1129,16 +1191,9 @@
             totalSpan.textContent = formatPrice(getCartTotal()) + ' ₽';
         }
 
-        // Глобальные функции для кнопок в корзине
-        window.updateCartQty = function(id, delta) {
-            updateQuantity(id, delta);
-        };
-        
-        window.removeCartItem = function(id) {
-            removeFromCart(id);
-        };
+        window.updateCartQty = function(id, delta) { updateQuantity(id, delta); };
+        window.removeCartItem = function(id) { removeFromCart(id); };
 
-        // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
         function formatPrice(price) {
             return price.toLocaleString('ru-RU');
         }
@@ -1196,14 +1251,12 @@
                 </div>
             `).join('');
 
-            // Привязываем кнопки добавления в корзину
             document.querySelectorAll('.cart-btn').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
                     const productId = parseInt(this.dataset.productId);
                     
                     if (addToCart(productId)) {
-                        // Анимация успеха
                         const originalIcon = this.innerHTML;
                         this.innerHTML = '<i class="fas fa-check"></i>';
                         this.style.background = '#22c55e';
@@ -1236,9 +1289,7 @@
         }
 
         searchBtn.addEventListener('click', performSearch);
-        searchInput.addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') performSearch();
-        });
+        searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') performSearch(); });
 
         // ===== МОДАЛЬНОЕ ОКНО КОРЗИНЫ =====
         const modal = document.getElementById('cartModal');
@@ -1252,35 +1303,25 @@
             modal.classList.add('active');
         });
 
-        closeBtn.addEventListener('click', () => {
-            modal.classList.remove('active');
-        });
+        closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
 
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.remove('active');
-            }
-        });
-
-        clearCartBtn.addEventListener('click', () => {
-            if (confirm('Очистить корзину?')) {
-                clearCart();
-            }
-        });
-
+        clearCartBtn.addEventListener('click', () => { if (confirm('Очистить корзину?')) clearCart(); });
         checkoutBtn.addEventListener('click', () => {
             alert('Спасибо за заказ! Наш менеджер свяжется с вами в ближайшее время.');
             clearCart();
             modal.classList.remove('active');
         });
 
-        // ===== ПЕРЕКЛЮЧЕНИЕ ТЕМЫ =====
+        // ===== ПЕРЕКЛЮЧЕНИЕ ТЕМЫ (ТЁМНАЯ ПО УМОЛЧАНИЮ) =====
         const themeToggle = document.getElementById('themeToggle');
         const htmlElement = document.documentElement;
         
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme) {
             htmlElement.setAttribute('data-theme', savedTheme);
+        } else {
+            htmlElement.setAttribute('data-theme', 'dark');
         }
         
         themeToggle.addEventListener('click', function() {
