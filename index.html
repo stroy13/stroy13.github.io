@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>СТРОЙ | Современные материалы</title>
-    <!-- Шрифты: современный гротеск Inter + акцентный декоративный -->
+    <!-- Шрифты -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&family=Montserrat:wght@800&display=swap" rel="stylesheet">
-    <!-- Font Awesome для иконок -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== БАЗОВЫЕ ПЕРЕМЕННЫЕ (СВЕТЛАЯ ТЕМА) ===== */
+        /* ===== БАЗОВЫЕ ПЕРЕМЕННЫЕ ===== */
         :root {
             --bg-primary: #f5f7fa;
             --bg-secondary: #ffffff;
@@ -50,9 +50,10 @@
             --scrollbar-track: #e2e8f0;
             --scrollbar-thumb: #94a3b8;
             --search-bg: white;
+            --modal-bg: white;
+            --modal-overlay: rgba(0, 0, 0, 0.5);
         }
 
-        /* ===== ТЁМНАЯ ТЕМА ===== */
         [data-theme="dark"] {
             --bg-primary: #0f172a;
             --bg-secondary: #1e293b;
@@ -91,6 +92,8 @@
             --scrollbar-track: #1e293b;
             --scrollbar-thumb: #475569;
             --search-bg: #1e293b;
+            --modal-bg: #1e293b;
+            --modal-overlay: rgba(0, 0, 0, 0.7);
         }
 
         * {
@@ -187,11 +190,31 @@
             color: var(--icon-color);
             font-size: 20px;
             transition: transform 0.2s, color 0.2s;
+            position: relative;
         }
 
         .nav-icons a:hover {
             transform: translateY(-2px);
             color: var(--gradient-start);
+        }
+
+        /* Бейдж корзины */
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--gradient-start);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            border: 2px solid var(--bg-header);
         }
 
         /* ===== ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ ===== */
@@ -231,6 +254,211 @@
 
         [data-theme="dark"] .theme-toggle .fa-moon {
             display: none;
+        }
+
+        /* ===== МОДАЛЬНОЕ ОКНО КОРЗИНЫ ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--modal-overlay);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .cart-modal {
+            background: var(--modal-bg);
+            border-radius: 32px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-light);
+        }
+
+        .cart-header {
+            padding: 24px 28px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--heading-color);
+        }
+
+        .cart-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-close:hover {
+            background: var(--cart-btn-bg);
+            color: var(--text-primary);
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px;
+        }
+
+        .cart-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .cart-empty i {
+            font-size: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-card);
+            border-radius: 20px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border-light);
+        }
+
+        .cart-item-img {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            background: var(--product-img-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gradient-start);
+            font-size: 24px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .cart-item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 600;
+            color: var(--heading-color);
+            margin-bottom: 4px;
+        }
+
+        .cart-item-price {
+            font-weight: 700;
+            color: var(--heading-color);
+        }
+
+        .cart-item-price small {
+            font-weight: 400;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cart-item-qty {
+            font-weight: 600;
+            color: var(--heading-color);
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .cart-item-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: var(--cart-btn-bg);
+            border: none;
+            color: var(--cart-btn-text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .cart-item-btn:hover {
+            background: var(--btn-bg);
+            color: var(--btn-text);
+        }
+
+        .cart-item-remove {
+            color: #ef4444;
+        }
+
+        .cart-footer {
+            padding: 20px 28px 28px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--heading-color);
+        }
+
+        .cart-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .cart-actions .btn {
+            flex: 1;
+            text-align: center;
+            padding: 14px 20px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--btn-outline-text);
+            box-shadow: none;
+            border: 1.5px solid var(--btn-outline-border);
         }
 
         /* ===== ПОИСК ===== */
@@ -275,11 +503,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-        }
-
-        .search-btn:hover {
-            opacity: 0.9;
-            transform: scale(1.02);
         }
 
         /* ===== HERO ===== */
@@ -336,6 +559,7 @@
             transition: all 0.3s;
             border: 1px solid var(--btn-bg);
             box-shadow: 0 10px 20px -5px rgba(15, 23, 42, 0.2);
+            cursor: pointer;
         }
 
         .btn:hover {
@@ -343,35 +567,15 @@
             opacity: 0.9;
         }
 
-        .btn-outline {
-            background: transparent;
-            color: var(--btn-outline-text);
-            margin-left: 16px;
-            box-shadow: none;
-            border: 1.5px solid var(--btn-outline-border);
-        }
-
-        .btn-outline:hover {
-            background: var(--btn-outline-hover-bg);
-            border-color: var(--btn-outline-text);
-        }
-
         .hero-image {
             background: var(--hero-image-gradient);
             border-radius: 40px;
             padding: 20px;
-            box-shadow: 
-                20px 20px 40px rgba(0,0,0,0.05),
-                -10px -10px 30px rgba(255,255,255,0.8),
-                inset 0 0 0 1px rgba(255,255,255,0.9);
-            transition: background 0.3s ease;
+            box-shadow: 20px 20px 40px rgba(0,0,0,0.05), -10px -10px 30px rgba(255,255,255,0.8), inset 0 0 0 1px rgba(255,255,255,0.9);
         }
 
         [data-theme="dark"] .hero-image {
-            box-shadow: 
-                20px 20px 40px rgba(0,0,0,0.3),
-                -10px -10px 30px rgba(30, 41, 59, 0.5),
-                inset 0 0 0 1px rgba(51, 65, 85, 0.5);
+            box-shadow: 20px 20px 40px rgba(0,0,0,0.3), -10px -10px 30px rgba(30, 41, 59, 0.5), inset 0 0 0 1px rgba(51, 65, 85, 0.5);
         }
 
         .hero-image img {
@@ -414,21 +618,6 @@
             color: var(--btn-text);
         }
 
-        /* ===== ФИЛЬТРЫ ===== */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            margin-bottom: 30px;
-        }
-
-        .section-header h2 {
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: var(--heading-color);
-        }
-
         /* ===== СЧЁТЧИК ТОВАРОВ ===== */
         .products-count {
             margin-bottom: 20px;
@@ -449,9 +638,8 @@
             border-radius: 24px;
             padding: 20px 18px 24px;
             box-shadow: var(--shadow-card);
-            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: all 0.3s;
             border: 1px solid var(--border-card);
-            backdrop-filter: blur(4px);
             display: flex;
             flex-direction: column;
         }
@@ -462,7 +650,6 @@
             border-color: var(--border-light);
         }
 
-        /* Обновлённый блок для изображений */
         .product-img {
             background: var(--product-img-bg);
             border-radius: 18px;
@@ -473,7 +660,6 @@
             margin-bottom: 16px;
             font-size: 42px;
             color: var(--gradient-start);
-            transition: background 0.2s;
             overflow: hidden;
         }
 
@@ -482,15 +668,11 @@
             height: 100%;
             object-fit: cover;
             border-radius: 18px;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s;
         }
 
         .product-card:hover .product-img img {
             transform: scale(1.05);
-        }
-
-        .product-card:hover .product-img {
-            background: var(--product-img-hover);
         }
 
         .product-category {
@@ -507,14 +689,12 @@
             font-size: 18px;
             margin-bottom: 6px;
             color: var(--heading-color);
-            line-height: 1.3;
         }
 
         .product-desc {
             color: var(--text-muted);
             font-size: 13px;
             margin-bottom: 16px;
-            line-height: 1.4;
         }
 
         .product-footer {
@@ -549,7 +729,6 @@
             font-size: 16px;
             cursor: pointer;
             transition: all 0.2s;
-            border: 1px solid transparent;
         }
 
         .cart-btn:hover {
@@ -568,10 +747,6 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 40px;
-        }
-
-        .feature-item {
-            text-align: left;
         }
 
         .feature-icon {
@@ -603,7 +778,6 @@
             padding: 40px 0;
             border-radius: 40px 40px 0 0;
             border-top: 1px solid var(--border-light);
-            transition: background 0.3s ease;
         }
 
         .footer-content {
@@ -625,14 +799,12 @@
             text-decoration: none;
             color: var(--nav-link-color);
             font-weight: 500;
-            transition: color 0.2s;
         }
 
         .footer-links a:hover {
             color: var(--nav-link-hover);
         }
 
-        /* Стили для выделения найденного текста */
         .no-results {
             text-align: center;
             padding: 60px 20px;
@@ -641,7 +813,7 @@
             grid-column: 1 / -1;
         }
 
-        /* ===== МОБИЛЬНАЯ АДАПТАЦИЯ ===== */
+        /* Мобильная адаптация */
         @media (max-width: 768px) {
             .hero {
                 grid-template-columns: 1fr;
@@ -655,12 +827,6 @@
             
             .nav-links {
                 display: none;
-            }
-            
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 20px;
             }
             
             .features-grid {
@@ -677,7 +843,6 @@
                 overflow-x: auto;
                 flex-wrap: nowrap;
                 padding-bottom: 15px;
-                -webkit-overflow-scrolling: touch;
             }
         }
     </style>
@@ -687,7 +852,7 @@
 <header>
     <div class="container">
         <nav>
-            <div class="logo">СТРОЙ БАЗА</div>
+            <div class="logo">СТРОЙ</div>
             <div class="nav-links">
                 <a href="#" class="active">Главная</a>
                 <a href="#catalog">Каталог</a>
@@ -697,7 +862,10 @@
             <div class="nav-icons">
                 <a href="#"><i class="far fa-heart"></i></a>
                 <a href="#"><i class="far fa-user"></i></a>
-                <a href="#"><i class="fas fa-shopping-cart"></i></a>
+                <a href="#" id="cartIcon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+                </a>
                 <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
                     <i class="fas fa-moon"></i>
                     <i class="fas fa-sun"></i>
@@ -707,19 +875,40 @@
     </div>
 </header>
 
+<!-- Модальное окно корзины -->
+<div class="modal-overlay" id="cartModal">
+    <div class="cart-modal">
+        <div class="cart-header">
+            <h3>Корзина</h3>
+            <button class="cart-close" id="closeCartModal"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="cart-items" id="cartItemsContainer">
+            <!-- Содержимое корзины будет здесь -->
+        </div>
+        <div class="cart-footer" id="cartFooter" style="display: none;">
+            <div class="cart-total">
+                <span>Итого:</span>
+                <span id="cartTotal">0 ₽</span>
+            </div>
+            <div class="cart-actions">
+                <button class="btn btn-outline" id="clearCartBtn">Очистить</button>
+                <button class="btn" id="checkoutBtn">Оформить заказ</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <main>
-    <!-- Поиск -->
     <div class="container">
         <div class="search-section">
             <div class="search-wrapper">
-                <input type="text" class="search-input" id="searchInput" placeholder="Поиск по товарам... (например, цемент, плитка, брус)">
+                <input type="text" class="search-input" id="searchInput" placeholder="Поиск по товарам...">
                 <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i> Найти</button>
             </div>
         </div>
     </div>
 
     <div class="container">
-        <!-- Hero (компактный) -->
         <section class="hero">
             <div class="hero-content">
                 <span class="hero-badge">🏗️ Стройматериалы с доставкой</span>
@@ -735,7 +924,6 @@
             </div>
         </section>
 
-        <!-- Категории-вкладки -->
         <div class="categories-tabs" id="categoryTabs">
             <button class="category-tab active" data-category="all">Все товары</button>
             <button class="category-tab" data-category="cement">Цемент и смеси</button>
@@ -746,7 +934,6 @@
             <button class="category-tab" data-category="pipes">Трубы и комплектующие</button>
         </div>
 
-        <!-- Каталог -->
         <section id="catalog">
             <div class="section-header">
                 <h2>Каталог товаров</h2>
@@ -754,13 +941,10 @@
             
             <div class="products-count" id="productsCount">Показано товаров: <span id="countValue">0</span></div>
             
-            <div class="products-grid" id="productsGrid">
-                <!-- Товары будут загружены через JavaScript -->
-            </div>
+            <div class="products-grid" id="productsGrid"></div>
         </section>
     </div>
 
-    <!-- Преимущества -->
     <section class="features" id="delivery">
         <div class="container">
             <div class="features-grid">
@@ -788,7 +972,7 @@
     <div class="container">
         <div class="footer-content">
             <div class="footer-copyright">
-                © 2026 СТРОЙ БАЗА. Все права защищены.
+                © 2026 СТРОЙ. Все права защищены. stroy13.github.io
             </div>
             <div class="footer-links">
                 <a href="#">Политика</a>
@@ -802,100 +986,163 @@
 
 <script>
     (function() {
-        // ===== БАЗА ТОВАРОВ (ДОБАВЛЕНО ПОЛЕ image) =====
+        // ===== БАЗА ТОВАРОВ =====
         const products = [
-            // Цемент и смеси
-            // ВСТАВЛЯЙ ССЫЛКИ НА ФОТО В ПОЛЕ image (например: image: "https://ccimg.cc/твой-код.jpg")
-            { name: "Цемент 50кг", category: "cement", subcategory: "Цемент", price: "550", unit: "шт", desc: "Портландцемент М500, 50 кг", image: "" },
-            { name: "Цемент 25кг", category: "cement", subcategory: "Цемент", price: "285", unit: "шт", desc: "Портландцемент М500, 25 кг", image: "" },
-            { name: "Клей для газоблока", category: "cement", subcategory: "Смеси", price: "240", unit: "шт", desc: "Специальный клей для газобетонных блоков", image: "" },
-            { name: "ЦПС М150", category: "cement", subcategory: "Смеси", price: "190", unit: "шт", desc: "Цементно-песчаная смесь М150", image: "" },
-            { name: "ЦПС М200", category: "cement", subcategory: "Смеси", price: "210", unit: "шт", desc: "Цементно-песчаная смесь М200", image: "" },
-            { name: "ЦПС М300", category: "cement", subcategory: "Смеси", price: "260", unit: "шт", desc: "Цементно-песчаная смесь М300", image: "" },
-            { name: "Шпаклёвка LR финишная", category: "cement", subcategory: "Смеси", price: "430", unit: "шт", desc: "Финишная шпаклёвка, высокое качество", image: "" },
-            
-            // Кольца ЖБИ
-            { name: "Кольцо 0.8м", category: "rings", subcategory: "Кольца ЖБИ", price: "2600", unit: "шт", desc: "Железобетонное кольцо, диаметр 0.8 м", image: "" },
-            { name: "Кольцо 1м", category: "rings", subcategory: "Кольца ЖБИ", price: "2700", unit: "шт", desc: "Железобетонное кольцо, диаметр 1 м", image: "" },
-            { name: "Кольцо 1.5м (в.0.8)", category: "rings", subcategory: "Кольца ЖБИ", price: "5300", unit: "шт", desc: "Кольцо ЖБИ 1.5 м, высота 0.8 м", image: "https://i.ibb.co/Lz1ggPMn/581-original.jpg" },
-            { name: "Кольцо 1.5м (в.0.9)", category: "rings", subcategory: "Кольца ЖБИ", price: "5500", unit: "шт", desc: "Кольцо ЖБИ 1.5 м, высота 0.9 м", image: "" },
-            { name: "Кольцо 2.0м (в.0.9)", category: "rings", subcategory: "Кольца ЖБИ", price: "10000", unit: "шт", desc: "Кольцо ЖБИ 2.0 м, высота 0.9 м", image: "" },
-            { name: "Половинка кольца 1м", category: "rings", subcategory: "Кольца ЖБИ", price: "2200", unit: "шт", desc: "Половинка железобетонного кольца 1 м", image: "" },
-            { name: "Половинка кольца 1.5м", category: "rings", subcategory: "Кольца ЖБИ", price: "4200", unit: "шт", desc: "Половинка железобетонного кольца 1.5 м", image: "" },
-            { name: "Крышка с люком 0.8м", category: "rings", subcategory: "Крышки и днища", price: "3500", unit: "шт", desc: "Крышка с люком для кольца 0.8 м", image: "" },
-            { name: "Крышка с люком 1м", category: "rings", subcategory: "Крышки и днища", price: "3700", unit: "шт", desc: "Крышка с люком для кольца 1 м", image: "" },
-            { name: "Крышка с люком 1.5м", category: "rings", subcategory: "Крышки и днища", price: "6000", unit: "шт", desc: "Крышка с люком для кольца 1.5 м", image: "" },
-            { name: "Крышка без люка 1.5м", category: "rings", subcategory: "Крышки и днища", price: "5500", unit: "шт", desc: "Крышка без люка для кольца 1.5 м", image: "" },
-            { name: "Крышка с люком 2.0м", category: "rings", subcategory: "Крышки и днища", price: "10000", unit: "шт", desc: "Крышка с люком для кольца 2.0 м", image: "" },
-            { name: "Донышко 0.8м", category: "rings", subcategory: "Крышки и днища", price: "2000", unit: "шт", desc: "Днище для кольца 0.8 м", image: "" },
-            { name: "Донышко 1м", category: "rings", subcategory: "Крышки и днища", price: "2200", unit: "шт", desc: "Днище для кольца 1 м", image: "" },
-            { name: "Донышко 1.5м", category: "rings", subcategory: "Крышки и днища", price: "4000", unit: "шт", desc: "Днище для кольца 1.5 м", image: "" },
-            { name: "Конус люк 1м", category: "rings", subcategory: "Крышки и днища", price: "2200", unit: "шт", desc: "Конус с люком 1 м", image: "" },
-            { name: "Люк газонный", category: "rings", subcategory: "Крышки и днища", price: "700", unit: "шт", desc: "Газонный люк", image: "" },
-            
-            // Плитка
-            { name: "Плитка серая 30x30", category: "tiles", subcategory: "Плитка", price: "550", unit: "м²", desc: "Тротуарная плитка серая, 30x30 см", image: "" },
-            { name: "Плитка красная 30x30", category: "tiles", subcategory: "Плитка", price: "750", unit: "м²", desc: "Тротуарная плитка красная, 30x30 см", image: "" },
-            { name: "Плитка серая 40x40", category: "tiles", subcategory: "Плитка", price: "140", unit: "шт", desc: "Плитка серая 40x40 см, цена за штуку", image: "" },
-            { name: "Плитка красная 40x40", category: "tiles", subcategory: "Плитка", price: "200", unit: "шт", desc: "Плитка красная 40x40 см, цена за штуку", image: "" },
-            { name: "Плитка 30x30 (брак)", category: "tiles", subcategory: "Плитка", price: "400", unit: "м²", desc: "Плитка 30x30 см, 2 сорт (брак)", image: "" },
-            { name: "Плитка 40x40 (брак)", category: "tiles", subcategory: "Плитка", price: "90", unit: "шт", desc: "Плитка 40x40 см, 2 сорт (брак)", image: "" },
-            { name: "Бордюр вибролитьё 1м", category: "tiles", subcategory: "Бордюры", price: "250", unit: "шт", desc: "Бордюр вибролитьевой, 1 метр", image: "" },
-            { name: "Бордюр вибролитьё 1м красный", category: "tiles", subcategory: "Бордюры", price: "400", unit: "шт", desc: "Бордюр вибролитьевой красный, 1 метр", image: "" },
-            { name: "Бордюр вибропресс 1м", category: "tiles", subcategory: "Бордюры", price: "300", unit: "шт", desc: "Бордюр вибропрессованный, 1 метр", image: "" },
-            { name: "Бордюр вибролитьё 0.5м", category: "tiles", subcategory: "Бордюры", price: "150", unit: "шт", desc: "Бордюр вибролитьевой, 0.5 метра", image: "" },
-            { name: "Слив", category: "tiles", subcategory: "Бордюры", price: "150", unit: "шт", desc: "Слив водосточный бетонный", image: "" },
-            { name: "Дорожный бордюр 1м", category: "tiles", subcategory: "Бордюры", price: "700", unit: "шт", desc: "Бордюр дорожный, 1 метр", image: "" },
-            { name: "Брусчатка 4см", category: "tiles", subcategory: "Брусчатка", price: "1000", unit: "м²", desc: "Брусчатка серая, толщина 4 см, 50 шт/м²", image: "" },
-            { name: "Брусчатка 6см", category: "tiles", subcategory: "Брусчатка", price: "1200", unit: "м²", desc: "Брусчатка серая, толщина 6 см, 50 шт/м²", image: "" },
-            { name: "Брусчатка красная 4см", category: "tiles", subcategory: "Брусчатка", price: "1400", unit: "м²", desc: "Брусчатка красная, толщина 4 см", image: "" },
-            { name: "Брусчатка коричневая 4см", category: "tiles", subcategory: "Брусчатка", price: "1400", unit: "м²", desc: "Брусчатка коричневая, толщина 4 см", image: "" },
-            { name: "Брусчатка жёлтая 4см", category: "tiles", subcategory: "Брусчатка", price: "1500", unit: "м²", desc: "Брусчатка жёлтая, толщина 4 см", image: "" },
-            
-            // Кирпич и блоки
-            { name: "Кирпич одинарный трубный", category: "bricks", subcategory: "Кирпич", price: "22", unit: "шт", desc: "Кирпич трубный одинарный, 448 шт в пачке", image: "" },
-            { name: "Кирпич одинарный полнотелый", category: "bricks", subcategory: "Кирпич", price: "23", unit: "шт", desc: "Кирпич полнотелый одинарный, 448 шт в пачке", image: "" },
-            { name: "Кирпич полуторный трубный", category: "bricks", subcategory: "Кирпич", price: "25", unit: "шт", desc: "Кирпич трубный полуторный, 352 шт в пачке", image: "" },
-            { name: "Кирпич полуторный щелевой", category: "bricks", subcategory: "Кирпич", price: "22", unit: "шт", desc: "Кирпич щелевой полуторный, 352 шт в пачке", image: "" },
-            { name: "Кирпич облицовочный красный", category: "bricks", subcategory: "Кирпич", price: "26", unit: "шт", desc: "Кирпич облицовочный красный, 396 шт в пачке", image: "" },
-            { name: "Кирпич облицовочный коричневый", category: "bricks", subcategory: "Кирпич", price: "40", unit: "шт", desc: "Кирпич облицовочный коричневый", image: "" },
-            { name: "Газоблок 600x200x300", category: "bricks", subcategory: "Блоки", price: "220", unit: "шт", desc: "Газобетонный блок 600x200x300 мм", image: "" },
-            { name: "Сетка 100x100 (2x1м)", category: "bricks", subcategory: "Сетка", price: "250", unit: "шт", desc: "Сетка кладочная, ячейка 100x100, 2x1 м", image: "" },
-            
-            // Пиломатериалы
-            { name: "Тёс 200x25x6м (2 сорт)", category: "wood", subcategory: "Доска", price: "485", unit: "шт", desc: "Тёс 200x25x6м, 2 сорт с обзолом, 33 шт/м³ (16000 ₽/м³)", image: "" },
-            { name: "Тёс 150x25x6м (2 сорт)", category: "wood", subcategory: "Доска", price: "365", unit: "шт", desc: "Тёс 150x25x6м, 2 сорт с обзолом, 44 шт/м³ (16000 ₽/м³)", image: "" },
-            { name: "Тёс 200x25x6м (1 сорт)", category: "wood", subcategory: "Доска", price: "450", unit: "шт", desc: "Тёс 200x25x6м, 1 сорт, 33 шт/м³ (19800 ₽/м³)", image: "" },
-            { name: "Доска 150x50x6м", category: "wood", subcategory: "Доска", price: "860", unit: "шт", desc: "Доска обрезная 150x50x6м, 1 сорт, 22 шт/м³ (19000 ₽/м³)", image: "" },
-            { name: "Доска 200x50x6м", category: "wood", subcategory: "Доска", price: "1380", unit: "шт", desc: "Доска обрезная 200x50x6м, 1 сорт, 16.5 шт/м³ (19000 ₽/м³)", image: "" },
-            { name: "Брус 150x150x6м", category: "wood", subcategory: "Брус", price: "2100", unit: "шт", desc: "Брус 150x150x6м, 1 сорт, 9 шт/м³ (19000 ₽/м³)", image: "" },
-            { name: "Брус 150x100x6м", category: "wood", subcategory: "Брус", price: "950", unit: "шт", desc: "Брус 150x100x6м, 1 сорт, 20 шт/м³ (19000 ₽/м³)", image: "" },
-            { name: "Брус 100x50x6м", category: "wood", subcategory: "Брус", price: "575", unit: "шт", desc: "Брус 100x50x6м, 1 сорт, 33 шт/м³ (19000 ₽/м³)", image: "" },
-            
-            // Трубы
-            { name: "Труба 3м", category: "pipes", subcategory: "Трубы", price: "1100", unit: "шт", desc: "Труба асбестоцементная/бетонная, 3 метра", image: "" },
-            { name: "Труба 2м", category: "pipes", subcategory: "Трубы", price: "750", unit: "шт", desc: "Труба асбестоцементная/бетонная, 2 метра", image: "" },
-            { name: "Труба 1м", category: "pipes", subcategory: "Трубы", price: "450", unit: "шт", desc: "Труба асбестоцементная/бетонная, 1 метр", image: "" },
-            { name: "Загиб 45°", category: "pipes", subcategory: "Комплектующие", price: "100", unit: "шт", desc: "Загиб (отвод) 45 градусов", image: "" },
-            { name: "Загиб 90°", category: "pipes", subcategory: "Комплектующие", price: "100", unit: "шт", desc: "Загиб (отвод) 90 градусов", image: "" },
-            { name: "Тройник", category: "pipes", subcategory: "Комплектующие", price: "180", unit: "шт", desc: "Тройник для труб", image: "" }
+            { id: 1, name: "Цемент 50кг", category: "cement", subcategory: "Цемент", price: 550, unit: "шт", desc: "Портландцемент М500, 50 кг", image: "" },
+            { id: 2, name: "Цемент 25кг", category: "cement", subcategory: "Цемент", price: 285, unit: "шт", desc: "Портландцемент М500, 25 кг", image: "" },
+            { id: 3, name: "Клей для газоблока", category: "cement", subcategory: "Смеси", price: 240, unit: "шт", desc: "Специальный клей для газобетонных блоков", image: "" },
+            { id: 4, name: "ЦПС М150", category: "cement", subcategory: "Смеси", price: 190, unit: "шт", desc: "Цементно-песчаная смесь М150", image: "" },
+            { id: 5, name: "ЦПС М200", category: "cement", subcategory: "Смеси", price: 210, unit: "шт", desc: "Цементно-песчаная смесь М200", image: "" },
+            { id: 6, name: "ЦПС М300", category: "cement", subcategory: "Смеси", price: 260, unit: "шт", desc: "Цементно-песчаная смесь М300", image: "" },
+            { id: 7, name: "Шпаклёвка LR финишная", category: "cement", subcategory: "Смеси", price: 430, unit: "шт", desc: "Финишная шпаклёвка, высокое качество", image: "" },
+            { id: 8, name: "Кольцо 0.8м", category: "rings", subcategory: "Кольца ЖБИ", price: 2600, unit: "шт", desc: "Железобетонное кольцо, диаметр 0.8 м", image: "" },
+            { id: 9, name: "Кольцо 1м", category: "rings", subcategory: "Кольца ЖБИ", price: 2700, unit: "шт", desc: "Железобетонное кольцо, диаметр 1 м", image: "" },
+            { id: 10, name: "Кирпич облицовочный красный", category: "bricks", subcategory: "Кирпич", price: 26, unit: "шт", desc: "Кирпич облицовочный красный", image: "" },
+            { id: 11, name: "Газоблок 600x200x300", category: "bricks", subcategory: "Блоки", price: 220, unit: "шт", desc: "Газобетонный блок 600x200x300 мм", image: "" },
+            { id: 12, name: "Брус 150x150x6м", category: "wood", subcategory: "Брус", price: 2100, unit: "шт", desc: "Брус 150x150x6м, 1 сорт", image: "" },
         ];
 
-        // ===== ОТОБРАЖЕНИЕ ТОВАРОВ =====
-        const grid = document.getElementById('productsGrid');
-        const countSpan = document.getElementById('countValue');
-        const searchInput = document.getElementById('searchInput');
-        const searchBtn = document.getElementById('searchBtn');
-        
-        let currentCategory = 'all';
-        let searchQuery = '';
+        // ===== КОРЗИНА =====
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-        // Функция форматирования цены
-        function formatPrice(price) {
-            return parseInt(price).toLocaleString('ru-RU');
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartUI();
         }
 
-        // Выбор иконки по категории (если нет изображения)
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    unit: product.unit,
+                    image: product.image,
+                    category: product.category,
+                    quantity: 1
+                });
+            }
+            saveCart();
+            
+            // Анимация добавления
+            return true;
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            saveCart();
+        }
+
+        function updateQuantity(productId, delta) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += delta;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    saveCart();
+                }
+            }
+        }
+
+        function clearCart() {
+            cart = [];
+            saveCart();
+        }
+
+        function getCartTotal() {
+            return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        }
+
+        function getCartCount() {
+            return cart.reduce((sum, item) => sum + item.quantity, 0);
+        }
+
+        // ===== ОБНОВЛЕНИЕ UI КОРЗИНЫ =====
+        function updateCartUI() {
+            const badge = document.getElementById('cartBadge');
+            const count = getCartCount();
+            
+            if (count > 0) {
+                badge.textContent = count;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+            
+            renderCartModal();
+        }
+
+        function renderCartModal() {
+            const container = document.getElementById('cartItemsContainer');
+            const footer = document.getElementById('cartFooter');
+            const totalSpan = document.getElementById('cartTotal');
+            
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="cart-empty">
+                        <i class="fas fa-shopping-cart"></i>
+                        <p>Ваша корзина пуста</p>
+                        <p style="font-size: 14px; margin-top: 8px;">Добавьте товары из каталога</p>
+                    </div>
+                `;
+                footer.style.display = 'none';
+                return;
+            }
+            
+            footer.style.display = 'block';
+            
+            container.innerHTML = cart.map(item => {
+                const product = products.find(p => p.id === item.id);
+                const icon = getIcon(item.category || product?.category || 'cement');
+                
+                return `
+                    <div class="cart-item">
+                        <div class="cart-item-img">
+                            ${item.image 
+                                ? `<img src="${item.image}" alt="${item.name}">`
+                                : `<i class="fas ${icon}"></i>`
+                            }
+                        </div>
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">${formatPrice(item.price)} ₽ <small>/${item.unit}</small></div>
+                        </div>
+                        <div class="cart-item-controls">
+                            <button class="cart-item-btn" onclick="window.updateCartQty(${item.id}, -1)">−</button>
+                            <span class="cart-item-qty">${item.quantity}</span>
+                            <button class="cart-item-btn" onclick="window.updateCartQty(${item.id}, 1)">+</button>
+                            <button class="cart-item-btn cart-item-remove" onclick="window.removeCartItem(${item.id})">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            totalSpan.textContent = formatPrice(getCartTotal()) + ' ₽';
+        }
+
+        // Глобальные функции для кнопок в корзине
+        window.updateCartQty = function(id, delta) {
+            updateQuantity(id, delta);
+        };
+        
+        window.removeCartItem = function(id) {
+            removeFromCart(id);
+        };
+
+        // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
+        function formatPrice(price) {
+            return price.toLocaleString('ru-RU');
+        }
+
         function getIcon(category) {
             const icons = {
                 'cement': 'fa-cube',
@@ -908,7 +1155,15 @@
             return icons[category] || 'fa-box';
         }
 
-        // Рендер товаров
+        // ===== ОТОБРАЖЕНИЕ ТОВАРОВ =====
+        const grid = document.getElementById('productsGrid');
+        const countSpan = document.getElementById('countValue');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        
+        let currentCategory = 'all';
+        let searchQuery = '';
+
         function renderProducts() {
             let filtered = products.filter(p => {
                 if (currentCategory !== 'all' && p.category !== currentCategory) return false;
@@ -919,7 +1174,7 @@
             countSpan.textContent = filtered.length;
 
             if (filtered.length === 0) {
-                grid.innerHTML = '<div class="no-results"><i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i><br>Товары не найдены<br><span style="font-size: 14px;">Попробуйте изменить запрос или категорию</span></div>';
+                grid.innerHTML = '<div class="no-results"><i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i><br>Товары не найдены</div>';
                 return;
             }
 
@@ -936,29 +1191,34 @@
                     <div class="product-desc">${p.desc}</div>
                     <div class="product-footer">
                         <div class="product-price">${formatPrice(p.price)} ₽ <small>/${p.unit}</small></div>
-                        <button class="cart-btn"><i class="fas fa-plus"></i></button>
+                        <button class="cart-btn" data-product-id="${p.id}"><i class="fas fa-plus"></i></button>
                     </div>
                 </div>
             `).join('');
 
-            // Перепривязываем кнопки корзины
+            // Привязываем кнопки добавления в корзину
             document.querySelectorAll('.cart-btn').forEach(btn => {
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    const originalIcon = this.innerHTML;
-                    this.innerHTML = '<i class="fas fa-check"></i>';
-                    this.style.background = '#22c55e';
-                    this.style.color = 'white';
-                    setTimeout(() => {
-                        this.innerHTML = originalIcon;
-                        this.style.background = '';
-                        this.style.color = '';
-                    }, 800);
+                    const productId = parseInt(this.dataset.productId);
+                    
+                    if (addToCart(productId)) {
+                        // Анимация успеха
+                        const originalIcon = this.innerHTML;
+                        this.innerHTML = '<i class="fas fa-check"></i>';
+                        this.style.background = '#22c55e';
+                        this.style.color = 'white';
+                        setTimeout(() => {
+                            this.innerHTML = originalIcon;
+                            this.style.background = '';
+                            this.style.color = '';
+                        }, 500);
+                    }
                 });
             });
         }
 
-        // Переключение категорий
+        // ===== ПЕРЕКЛЮЧЕНИЕ КАТЕГОРИЙ =====
         const categoryTabs = document.querySelectorAll('.category-tab');
         categoryTabs.forEach(tab => {
             tab.addEventListener('click', function() {
@@ -969,7 +1229,7 @@
             });
         });
 
-        // Поиск
+        // ===== ПОИСК =====
         function performSearch() {
             searchQuery = searchInput.value.trim();
             renderProducts();
@@ -978,6 +1238,40 @@
         searchBtn.addEventListener('click', performSearch);
         searchInput.addEventListener('keyup', (e) => {
             if (e.key === 'Enter') performSearch();
+        });
+
+        // ===== МОДАЛЬНОЕ ОКНО КОРЗИНЫ =====
+        const modal = document.getElementById('cartModal');
+        const cartIcon = document.getElementById('cartIcon');
+        const closeBtn = document.getElementById('closeCartModal');
+        const clearCartBtn = document.getElementById('clearCartBtn');
+        const checkoutBtn = document.getElementById('checkoutBtn');
+
+        cartIcon.addEventListener('click', (e) => {
+            e.preventDefault();
+            modal.classList.add('active');
+        });
+
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        clearCartBtn.addEventListener('click', () => {
+            if (confirm('Очистить корзину?')) {
+                clearCart();
+            }
+        });
+
+        checkoutBtn.addEventListener('click', () => {
+            alert('Спасибо за заказ! Наш менеджер свяжется с вами в ближайшее время.');
+            clearCart();
+            modal.classList.remove('active');
         });
 
         // ===== ПЕРЕКЛЮЧЕНИЕ ТЕМЫ =====
@@ -996,8 +1290,9 @@
             localStorage.setItem('theme', newTheme);
         });
 
-        // Первичный рендер
+        // ===== ИНИЦИАЛИЗАЦИЯ =====
         renderProducts();
+        updateCartUI();
     })();
 </script>
 
