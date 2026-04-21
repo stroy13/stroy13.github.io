@@ -429,30 +429,6 @@
             color: var(--heading-color);
         }
 
-        .filter-tabs {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            background: var(--filter-btn-bg);
-            border: 1px solid var(--filter-btn-border);
-            padding: 8px 20px;
-            border-radius: 40px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--filter-btn-text);
-        }
-
-        .filter-btn.active, .filter-btn:hover {
-            background: var(--btn-bg);
-            color: var(--btn-text);
-            border-color: var(--btn-bg);
-            box-shadow: 0 6px 12px rgba(15, 23, 42, 0.1);
-        }
-
         /* ===== СЧЁТЧИК ТОВАРОВ ===== */
         .products-count {
             margin-bottom: 20px;
@@ -486,10 +462,11 @@
             border-color: var(--border-light);
         }
 
+        /* Обновлённый блок для изображений */
         .product-img {
             background: var(--product-img-bg);
             border-radius: 18px;
-            height: 140px;
+            height: 160px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -497,6 +474,19 @@
             font-size: 42px;
             color: var(--gradient-start);
             transition: background 0.2s;
+            overflow: hidden;
+        }
+
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-img img {
+            transform: scale(1.05);
         }
 
         .product-card:hover .product-img {
@@ -812,82 +802,83 @@
 
 <script>
     (function() {
-        // ===== БАЗА ТОВАРОВ =====
+        // ===== БАЗА ТОВАРОВ (ДОБАВЛЕНО ПОЛЕ image) =====
         const products = [
             // Цемент и смеси
-            { name: "Цемент 50кг", category: "cement", subcategory: "Цемент", price: "550", unit: "шт", desc: "Портландцемент М500, 50 кг" },
-            { name: "Цемент 25кг", category: "cement", subcategory: "Цемент", price: "285", unit: "шт", desc: "Портландцемент М500, 25 кг" },
-            { name: "Клей для газоблока", category: "cement", subcategory: "Смеси", price: "240", unit: "шт", desc: "Специальный клей для газобетонных блоков" },
-            { name: "ЦПС М150", category: "cement", subcategory: "Смеси", price: "190", unit: "шт", desc: "Цементно-песчаная смесь М150" },
-            { name: "ЦПС М200", category: "cement", subcategory: "Смеси", price: "210", unit: "шт", desc: "Цементно-песчаная смесь М200" },
-            { name: "ЦПС М300", category: "cement", subcategory: "Смеси", price: "260", unit: "шт", desc: "Цементно-песчаная смесь М300" },
-            { name: "Шпаклёвка LR финишная", category: "cement", subcategory: "Смеси", price: "430", unit: "шт", desc: "Финишная шпаклёвка, высокое качество" },
+            // ВСТАВЛЯЙ ССЫЛКИ НА ФОТО В ПОЛЕ image (например: image: "https://ccimg.cc/твой-код.jpg")
+            { name: "Цемент 50кг", category: "cement", subcategory: "Цемент", price: "550", unit: "шт", desc: "Портландцемент М500, 50 кг", image: "" },
+            { name: "Цемент 25кг", category: "cement", subcategory: "Цемент", price: "285", unit: "шт", desc: "Портландцемент М500, 25 кг", image: "" },
+            { name: "Клей для газоблока", category: "cement", subcategory: "Смеси", price: "240", unit: "шт", desc: "Специальный клей для газобетонных блоков", image: "" },
+            { name: "ЦПС М150", category: "cement", subcategory: "Смеси", price: "190", unit: "шт", desc: "Цементно-песчаная смесь М150", image: "" },
+            { name: "ЦПС М200", category: "cement", subcategory: "Смеси", price: "210", unit: "шт", desc: "Цементно-песчаная смесь М200", image: "" },
+            { name: "ЦПС М300", category: "cement", subcategory: "Смеси", price: "260", unit: "шт", desc: "Цементно-песчаная смесь М300", image: "" },
+            { name: "Шпаклёвка LR финишная", category: "cement", subcategory: "Смеси", price: "430", unit: "шт", desc: "Финишная шпаклёвка, высокое качество", image: "" },
             
             // Кольца ЖБИ
-            { name: "Кольцо 0.8м", category: "rings", subcategory: "Кольца ЖБИ", price: "2600", unit: "шт", desc: "Железобетонное кольцо, диаметр 0.8 м" },
-            { name: "Кольцо 1м", category: "rings", subcategory: "Кольца ЖБИ", price: "2700", unit: "шт", desc: "Железобетонное кольцо, диаметр 1 м" },
-            { name: "Кольцо 1.5м (в.0.8)", category: "rings", subcategory: "Кольца ЖБИ", price: "5300", unit: "шт", desc: "Кольцо ЖБИ 1.5 м, высота 0.8 м" },
-            { name: "Кольцо 1.5м (в.0.9)", category: "rings", subcategory: "Кольца ЖБИ", price: "5500", unit: "шт", desc: "Кольцо ЖБИ 1.5 м, высота 0.9 м" },
-            { name: "Кольцо 2.0м (в.0.9)", category: "rings", subcategory: "Кольца ЖБИ", price: "10000", unit: "шт", desc: "Кольцо ЖБИ 2.0 м, высота 0.9 м" },
-            { name: "Половинка кольца 1м", category: "rings", subcategory: "Кольца ЖБИ", price: "2200", unit: "шт", desc: "Половинка железобетонного кольца 1 м" },
-            { name: "Половинка кольца 1.5м", category: "rings", subcategory: "Кольца ЖБИ", price: "4200", unit: "шт", desc: "Половинка железобетонного кольца 1.5 м" },
-            { name: "Крышка с люком 0.8м", category: "rings", subcategory: "Крышки и днища", price: "3500", unit: "шт", desc: "Крышка с люком для кольца 0.8 м" },
-            { name: "Крышка с люком 1м", category: "rings", subcategory: "Крышки и днища", price: "3700", unit: "шт", desc: "Крышка с люком для кольца 1 м" },
-            { name: "Крышка с люком 1.5м", category: "rings", subcategory: "Крышки и днища", price: "6000", unit: "шт", desc: "Крышка с люком для кольца 1.5 м" },
-            { name: "Крышка без люка 1.5м", category: "rings", subcategory: "Крышки и днища", price: "5500", unit: "шт", desc: "Крышка без люка для кольца 1.5 м" },
-            { name: "Крышка с люком 2.0м", category: "rings", subcategory: "Крышки и днища", price: "10000", unit: "шт", desc: "Крышка с люком для кольца 2.0 м" },
-            { name: "Донышко 0.8м", category: "rings", subcategory: "Крышки и днища", price: "2000", unit: "шт", desc: "Днище для кольца 0.8 м" },
-            { name: "Донышко 1м", category: "rings", subcategory: "Крышки и днища", price: "2200", unit: "шт", desc: "Днище для кольца 1 м" },
-            { name: "Донышко 1.5м", category: "rings", subcategory: "Крышки и днища", price: "4000", unit: "шт", desc: "Днище для кольца 1.5 м" },
-            { name: "Конус люк 1м", category: "rings", subcategory: "Крышки и днища", price: "2200", unit: "шт", desc: "Конус с люком 1 м" },
-            { name: "Люк газонный", category: "rings", subcategory: "Крышки и днища", price: "700", unit: "шт", desc: "Газонный люк" },
+            { name: "Кольцо 0.8м", category: "rings", subcategory: "Кольца ЖБИ", price: "2600", unit: "шт", desc: "Железобетонное кольцо, диаметр 0.8 м", image: "" },
+            { name: "Кольцо 1м", category: "rings", subcategory: "Кольца ЖБИ", price: "2700", unit: "шт", desc: "Железобетонное кольцо, диаметр 1 м", image: "" },
+            { name: "Кольцо 1.5м (в.0.8)", category: "rings", subcategory: "Кольца ЖБИ", price: "5300", unit: "шт", desc: "Кольцо ЖБИ 1.5 м, высота 0.8 м", image: "https://ibb.co/MD711hbM" },
+            { name: "Кольцо 1.5м (в.0.9)", category: "rings", subcategory: "Кольца ЖБИ", price: "5500", unit: "шт", desc: "Кольцо ЖБИ 1.5 м, высота 0.9 м", image: "" },
+            { name: "Кольцо 2.0м (в.0.9)", category: "rings", subcategory: "Кольца ЖБИ", price: "10000", unit: "шт", desc: "Кольцо ЖБИ 2.0 м, высота 0.9 м", image: "" },
+            { name: "Половинка кольца 1м", category: "rings", subcategory: "Кольца ЖБИ", price: "2200", unit: "шт", desc: "Половинка железобетонного кольца 1 м", image: "" },
+            { name: "Половинка кольца 1.5м", category: "rings", subcategory: "Кольца ЖБИ", price: "4200", unit: "шт", desc: "Половинка железобетонного кольца 1.5 м", image: "" },
+            { name: "Крышка с люком 0.8м", category: "rings", subcategory: "Крышки и днища", price: "3500", unit: "шт", desc: "Крышка с люком для кольца 0.8 м", image: "" },
+            { name: "Крышка с люком 1м", category: "rings", subcategory: "Крышки и днища", price: "3700", unit: "шт", desc: "Крышка с люком для кольца 1 м", image: "" },
+            { name: "Крышка с люком 1.5м", category: "rings", subcategory: "Крышки и днища", price: "6000", unit: "шт", desc: "Крышка с люком для кольца 1.5 м", image: "" },
+            { name: "Крышка без люка 1.5м", category: "rings", subcategory: "Крышки и днища", price: "5500", unit: "шт", desc: "Крышка без люка для кольца 1.5 м", image: "" },
+            { name: "Крышка с люком 2.0м", category: "rings", subcategory: "Крышки и днища", price: "10000", unit: "шт", desc: "Крышка с люком для кольца 2.0 м", image: "" },
+            { name: "Донышко 0.8м", category: "rings", subcategory: "Крышки и днища", price: "2000", unit: "шт", desc: "Днище для кольца 0.8 м", image: "" },
+            { name: "Донышко 1м", category: "rings", subcategory: "Крышки и днища", price: "2200", unit: "шт", desc: "Днище для кольца 1 м", image: "" },
+            { name: "Донышко 1.5м", category: "rings", subcategory: "Крышки и днища", price: "4000", unit: "шт", desc: "Днище для кольца 1.5 м", image: "" },
+            { name: "Конус люк 1м", category: "rings", subcategory: "Крышки и днища", price: "2200", unit: "шт", desc: "Конус с люком 1 м", image: "" },
+            { name: "Люк газонный", category: "rings", subcategory: "Крышки и днища", price: "700", unit: "шт", desc: "Газонный люк", image: "" },
             
             // Плитка
-            { name: "Плитка серая 30x30", category: "tiles", subcategory: "Плитка", price: "550", unit: "м²", desc: "Тротуарная плитка серая, 30x30 см" },
-            { name: "Плитка красная 30x30", category: "tiles", subcategory: "Плитка", price: "750", unit: "м²", desc: "Тротуарная плитка красная, 30x30 см" },
-            { name: "Плитка серая 40x40", category: "tiles", subcategory: "Плитка", price: "140", unit: "шт", desc: "Плитка серая 40x40 см, цена за штуку" },
-            { name: "Плитка красная 40x40", category: "tiles", subcategory: "Плитка", price: "200", unit: "шт", desc: "Плитка красная 40x40 см, цена за штуку" },
-            { name: "Плитка 30x30 (брак)", category: "tiles", subcategory: "Плитка", price: "400", unit: "м²", desc: "Плитка 30x30 см, 2 сорт (брак)" },
-            { name: "Плитка 40x40 (брак)", category: "tiles", subcategory: "Плитка", price: "90", unit: "шт", desc: "Плитка 40x40 см, 2 сорт (брак)" },
-            { name: "Бордюр вибролитьё 1м", category: "tiles", subcategory: "Бордюры", price: "250", unit: "шт", desc: "Бордюр вибролитьевой, 1 метр" },
-            { name: "Бордюр вибролитьё 1м красный", category: "tiles", subcategory: "Бордюры", price: "400", unit: "шт", desc: "Бордюр вибролитьевой красный, 1 метр" },
-            { name: "Бордюр вибропресс 1м", category: "tiles", subcategory: "Бордюры", price: "300", unit: "шт", desc: "Бордюр вибропрессованный, 1 метр" },
-            { name: "Бордюр вибролитьё 0.5м", category: "tiles", subcategory: "Бордюры", price: "150", unit: "шт", desc: "Бордюр вибролитьевой, 0.5 метра" },
-            { name: "Слив", category: "tiles", subcategory: "Бордюры", price: "150", unit: "шт", desc: "Слив водосточный бетонный" },
-            { name: "Дорожный бордюр 1м", category: "tiles", subcategory: "Бордюры", price: "700", unit: "шт", desc: "Бордюр дорожный, 1 метр" },
-            { name: "Брусчатка 4см", category: "tiles", subcategory: "Брусчатка", price: "1000", unit: "м²", desc: "Брусчатка серая, толщина 4 см, 50 шт/м²" },
-            { name: "Брусчатка 6см", category: "tiles", subcategory: "Брусчатка", price: "1200", unit: "м²", desc: "Брусчатка серая, толщина 6 см, 50 шт/м²" },
-            { name: "Брусчатка красная 4см", category: "tiles", subcategory: "Брусчатка", price: "1400", unit: "м²", desc: "Брусчатка красная, толщина 4 см" },
-            { name: "Брусчатка коричневая 4см", category: "tiles", subcategory: "Брусчатка", price: "1400", unit: "м²", desc: "Брусчатка коричневая, толщина 4 см" },
-            { name: "Брусчатка жёлтая 4см", category: "tiles", subcategory: "Брусчатка", price: "1500", unit: "м²", desc: "Брусчатка жёлтая, толщина 4 см" },
+            { name: "Плитка серая 30x30", category: "tiles", subcategory: "Плитка", price: "550", unit: "м²", desc: "Тротуарная плитка серая, 30x30 см", image: "" },
+            { name: "Плитка красная 30x30", category: "tiles", subcategory: "Плитка", price: "750", unit: "м²", desc: "Тротуарная плитка красная, 30x30 см", image: "" },
+            { name: "Плитка серая 40x40", category: "tiles", subcategory: "Плитка", price: "140", unit: "шт", desc: "Плитка серая 40x40 см, цена за штуку", image: "" },
+            { name: "Плитка красная 40x40", category: "tiles", subcategory: "Плитка", price: "200", unit: "шт", desc: "Плитка красная 40x40 см, цена за штуку", image: "" },
+            { name: "Плитка 30x30 (брак)", category: "tiles", subcategory: "Плитка", price: "400", unit: "м²", desc: "Плитка 30x30 см, 2 сорт (брак)", image: "" },
+            { name: "Плитка 40x40 (брак)", category: "tiles", subcategory: "Плитка", price: "90", unit: "шт", desc: "Плитка 40x40 см, 2 сорт (брак)", image: "" },
+            { name: "Бордюр вибролитьё 1м", category: "tiles", subcategory: "Бордюры", price: "250", unit: "шт", desc: "Бордюр вибролитьевой, 1 метр", image: "" },
+            { name: "Бордюр вибролитьё 1м красный", category: "tiles", subcategory: "Бордюры", price: "400", unit: "шт", desc: "Бордюр вибролитьевой красный, 1 метр", image: "" },
+            { name: "Бордюр вибропресс 1м", category: "tiles", subcategory: "Бордюры", price: "300", unit: "шт", desc: "Бордюр вибропрессованный, 1 метр", image: "" },
+            { name: "Бордюр вибролитьё 0.5м", category: "tiles", subcategory: "Бордюры", price: "150", unit: "шт", desc: "Бордюр вибролитьевой, 0.5 метра", image: "" },
+            { name: "Слив", category: "tiles", subcategory: "Бордюры", price: "150", unit: "шт", desc: "Слив водосточный бетонный", image: "" },
+            { name: "Дорожный бордюр 1м", category: "tiles", subcategory: "Бордюры", price: "700", unit: "шт", desc: "Бордюр дорожный, 1 метр", image: "" },
+            { name: "Брусчатка 4см", category: "tiles", subcategory: "Брусчатка", price: "1000", unit: "м²", desc: "Брусчатка серая, толщина 4 см, 50 шт/м²", image: "" },
+            { name: "Брусчатка 6см", category: "tiles", subcategory: "Брусчатка", price: "1200", unit: "м²", desc: "Брусчатка серая, толщина 6 см, 50 шт/м²", image: "" },
+            { name: "Брусчатка красная 4см", category: "tiles", subcategory: "Брусчатка", price: "1400", unit: "м²", desc: "Брусчатка красная, толщина 4 см", image: "" },
+            { name: "Брусчатка коричневая 4см", category: "tiles", subcategory: "Брусчатка", price: "1400", unit: "м²", desc: "Брусчатка коричневая, толщина 4 см", image: "" },
+            { name: "Брусчатка жёлтая 4см", category: "tiles", subcategory: "Брусчатка", price: "1500", unit: "м²", desc: "Брусчатка жёлтая, толщина 4 см", image: "" },
             
             // Кирпич и блоки
-            { name: "Кирпич одинарный трубный", category: "bricks", subcategory: "Кирпич", price: "22", unit: "шт", desc: "Кирпич трубный одинарный, 448 шт в пачке" },
-            { name: "Кирпич одинарный полнотелый", category: "bricks", subcategory: "Кирпич", price: "23", unit: "шт", desc: "Кирпич полнотелый одинарный, 448 шт в пачке" },
-            { name: "Кирпич полуторный трубный", category: "bricks", subcategory: "Кирпич", price: "25", unit: "шт", desc: "Кирпич трубный полуторный, 352 шт в пачке" },
-            { name: "Кирпич полуторный щелевой", category: "bricks", subcategory: "Кирпич", price: "22", unit: "шт", desc: "Кирпич щелевой полуторный, 352 шт в пачке" },
-            { name: "Кирпич облицовочный красный", category: "bricks", subcategory: "Кирпич", price: "26", unit: "шт", desc: "Кирпич облицовочный красный, 396 шт в пачке" },
-            { name: "Кирпич облицовочный коричневый", category: "bricks", subcategory: "Кирпич", price: "40", unit: "шт", desc: "Кирпич облицовочный коричневый" },
-            { name: "Газоблок 600x200x300", category: "bricks", subcategory: "Блоки", price: "220", unit: "шт", desc: "Газобетонный блок 600x200x300 мм" },
-            { name: "Сетка 100x100 (2x1м)", category: "bricks", subcategory: "Сетка", price: "250", unit: "шт", desc: "Сетка кладочная, ячейка 100x100, 2x1 м" },
+            { name: "Кирпич одинарный трубный", category: "bricks", subcategory: "Кирпич", price: "22", unit: "шт", desc: "Кирпич трубный одинарный, 448 шт в пачке", image: "" },
+            { name: "Кирпич одинарный полнотелый", category: "bricks", subcategory: "Кирпич", price: "23", unit: "шт", desc: "Кирпич полнотелый одинарный, 448 шт в пачке", image: "" },
+            { name: "Кирпич полуторный трубный", category: "bricks", subcategory: "Кирпич", price: "25", unit: "шт", desc: "Кирпич трубный полуторный, 352 шт в пачке", image: "" },
+            { name: "Кирпич полуторный щелевой", category: "bricks", subcategory: "Кирпич", price: "22", unit: "шт", desc: "Кирпич щелевой полуторный, 352 шт в пачке", image: "" },
+            { name: "Кирпич облицовочный красный", category: "bricks", subcategory: "Кирпич", price: "26", unit: "шт", desc: "Кирпич облицовочный красный, 396 шт в пачке", image: "" },
+            { name: "Кирпич облицовочный коричневый", category: "bricks", subcategory: "Кирпич", price: "40", unit: "шт", desc: "Кирпич облицовочный коричневый", image: "" },
+            { name: "Газоблок 600x200x300", category: "bricks", subcategory: "Блоки", price: "220", unit: "шт", desc: "Газобетонный блок 600x200x300 мм", image: "" },
+            { name: "Сетка 100x100 (2x1м)", category: "bricks", subcategory: "Сетка", price: "250", unit: "шт", desc: "Сетка кладочная, ячейка 100x100, 2x1 м", image: "" },
             
             // Пиломатериалы
-            { name: "Тёс 200x25x6м (2 сорт)", category: "wood", subcategory: "Доска", price: "485", unit: "шт", desc: "Тёс 200x25x6м, 2 сорт с обзолом, 33 шт/м³ (16000 ₽/м³)" },
-            { name: "Тёс 150x25x6м (2 сорт)", category: "wood", subcategory: "Доска", price: "365", unit: "шт", desc: "Тёс 150x25x6м, 2 сорт с обзолом, 44 шт/м³ (16000 ₽/м³)" },
-            { name: "Тёс 200x25x6м (1 сорт)", category: "wood", subcategory: "Доска", price: "450", unit: "шт", desc: "Тёс 200x25x6м, 1 сорт, 33 шт/м³ (19800 ₽/м³)" },
-            { name: "Доска 150x50x6м", category: "wood", subcategory: "Доска", price: "860", unit: "шт", desc: "Доска обрезная 150x50x6м, 1 сорт, 22 шт/м³ (19000 ₽/м³)" },
-            { name: "Доска 200x50x6м", category: "wood", subcategory: "Доска", price: "1380", unit: "шт", desc: "Доска обрезная 200x50x6м, 1 сорт, 16.5 шт/м³ (19000 ₽/м³)" },
-            { name: "Брус 150x150x6м", category: "wood", subcategory: "Брус", price: "2100", unit: "шт", desc: "Брус 150x150x6м, 1 сорт, 9 шт/м³ (19000 ₽/м³)" },
-            { name: "Брус 150x100x6м", category: "wood", subcategory: "Брус", price: "950", unit: "шт", desc: "Брус 150x100x6м, 1 сорт, 20 шт/м³ (19000 ₽/м³)" },
-            { name: "Брус 100x50x6м", category: "wood", subcategory: "Брус", price: "575", unit: "шт", desc: "Брус 100x50x6м, 1 сорт, 33 шт/м³ (19000 ₽/м³)" },
+            { name: "Тёс 200x25x6м (2 сорт)", category: "wood", subcategory: "Доска", price: "485", unit: "шт", desc: "Тёс 200x25x6м, 2 сорт с обзолом, 33 шт/м³ (16000 ₽/м³)", image: "" },
+            { name: "Тёс 150x25x6м (2 сорт)", category: "wood", subcategory: "Доска", price: "365", unit: "шт", desc: "Тёс 150x25x6м, 2 сорт с обзолом, 44 шт/м³ (16000 ₽/м³)", image: "" },
+            { name: "Тёс 200x25x6м (1 сорт)", category: "wood", subcategory: "Доска", price: "450", unit: "шт", desc: "Тёс 200x25x6м, 1 сорт, 33 шт/м³ (19800 ₽/м³)", image: "" },
+            { name: "Доска 150x50x6м", category: "wood", subcategory: "Доска", price: "860", unit: "шт", desc: "Доска обрезная 150x50x6м, 1 сорт, 22 шт/м³ (19000 ₽/м³)", image: "" },
+            { name: "Доска 200x50x6м", category: "wood", subcategory: "Доска", price: "1380", unit: "шт", desc: "Доска обрезная 200x50x6м, 1 сорт, 16.5 шт/м³ (19000 ₽/м³)", image: "" },
+            { name: "Брус 150x150x6м", category: "wood", subcategory: "Брус", price: "2100", unit: "шт", desc: "Брус 150x150x6м, 1 сорт, 9 шт/м³ (19000 ₽/м³)", image: "" },
+            { name: "Брус 150x100x6м", category: "wood", subcategory: "Брус", price: "950", unit: "шт", desc: "Брус 150x100x6м, 1 сорт, 20 шт/м³ (19000 ₽/м³)", image: "" },
+            { name: "Брус 100x50x6м", category: "wood", subcategory: "Брус", price: "575", unit: "шт", desc: "Брус 100x50x6м, 1 сорт, 33 шт/м³ (19000 ₽/м³)", image: "" },
             
             // Трубы
-            { name: "Труба 3м", category: "pipes", subcategory: "Трубы", price: "1100", unit: "шт", desc: "Труба асбестоцементная/бетонная, 3 метра" },
-            { name: "Труба 2м", category: "pipes", subcategory: "Трубы", price: "750", unit: "шт", desc: "Труба асбестоцементная/бетонная, 2 метра" },
-            { name: "Труба 1м", category: "pipes", subcategory: "Трубы", price: "450", unit: "шт", desc: "Труба асбестоцементная/бетонная, 1 метр" },
-            { name: "Загиб 45°", category: "pipes", subcategory: "Комплектующие", price: "100", unit: "шт", desc: "Загиб (отвод) 45 градусов" },
-            { name: "Загиб 90°", category: "pipes", subcategory: "Комплектующие", price: "100", unit: "шт", desc: "Загиб (отвод) 90 градусов" },
-            { name: "Тройник", category: "pipes", subcategory: "Комплектующие", price: "180", unit: "шт", desc: "Тройник для труб" }
+            { name: "Труба 3м", category: "pipes", subcategory: "Трубы", price: "1100", unit: "шт", desc: "Труба асбестоцементная/бетонная, 3 метра", image: "" },
+            { name: "Труба 2м", category: "pipes", subcategory: "Трубы", price: "750", unit: "шт", desc: "Труба асбестоцементная/бетонная, 2 метра", image: "" },
+            { name: "Труба 1м", category: "pipes", subcategory: "Трубы", price: "450", unit: "шт", desc: "Труба асбестоцементная/бетонная, 1 метр", image: "" },
+            { name: "Загиб 45°", category: "pipes", subcategory: "Комплектующие", price: "100", unit: "шт", desc: "Загиб (отвод) 45 градусов", image: "" },
+            { name: "Загиб 90°", category: "pipes", subcategory: "Комплектующие", price: "100", unit: "шт", desc: "Загиб (отвод) 90 градусов", image: "" },
+            { name: "Тройник", category: "pipes", subcategory: "Комплектующие", price: "180", unit: "шт", desc: "Тройник для труб", image: "" }
         ];
 
         // ===== ОТОБРАЖЕНИЕ ТОВАРОВ =====
@@ -904,7 +895,7 @@
             return parseInt(price).toLocaleString('ru-RU');
         }
 
-        // Выбор иконки по категории
+        // Выбор иконки по категории (если нет изображения)
         function getIcon(category) {
             const icons = {
                 'cement': 'fa-cube',
@@ -920,9 +911,7 @@
         // Рендер товаров
         function renderProducts() {
             let filtered = products.filter(p => {
-                // Фильтр по категории
                 if (currentCategory !== 'all' && p.category !== currentCategory) return false;
-                // Фильтр по поиску
                 if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
                 return true;
             });
@@ -937,7 +926,10 @@
             grid.innerHTML = filtered.map(p => `
                 <div class="product-card" data-category="${p.category}">
                     <div class="product-img">
-                        <i class="fas ${getIcon(p.category)}"></i>
+                        ${p.image 
+                            ? `<img src="${p.image}" alt="${p.name}" loading="lazy">`
+                            : `<i class="fas ${getIcon(p.category)}"></i>`
+                        }
                     </div>
                     <div class="product-category">${p.subcategory}</div>
                     <div class="product-title">${p.name}</div>
