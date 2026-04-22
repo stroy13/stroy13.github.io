@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>СТРОЙ | Современные материалы</title>
+    <title>СТРОЙ | Стройматериалы</title>
     <!-- Шрифты -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,51 +11,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* ===== БАЗОВЫЕ ПЕРЕМЕННЫЕ (СВЕТЛАЯ ТЕМА) ===== */
         :root {
-            --bg-primary: #f5f7fa;
-            --bg-secondary: #ffffff;
-            --bg-card: #ffffff;
-            --bg-header: rgba(255, 255, 255, 0.7);
-            --text-primary: #1e293b;
-            --text-secondary: #475569;
-            --text-muted: #64748b;
-            --heading-color: #0f172a;
-            --border-light: #e2e8f0;
-            --border-card: rgba(255, 255, 255, 0.5);
-            --shadow-card: 0 20px 30px -10px rgba(0, 0, 0, 0.05);
-            --shadow-hover: 0 30px 40px -12px rgba(37, 99, 235, 0.15);
-            --btn-bg: #0f172a;
-            --btn-text: white;
-            --btn-outline-border: #cbd5e1;
-            --btn-outline-text: #0f172a;
-            --btn-outline-hover-bg: #f8fafc;
-            --filter-btn-bg: white;
-            --filter-btn-border: #e2e8f0;
-            --filter-btn-text: #475569;
-            --product-img-bg: #f1f5f9;
-            --product-img-hover: #eef2ff;
-            --cart-btn-bg: #f1f5f9;
-            --cart-btn-text: #0f172a;
-            --feature-icon-gradient: linear-gradient(135deg, #dbeafe, #ede9fe);
-            --footer-bg: white;
-            --gradient-start: #2563eb;
-            --gradient-end: #7c3aed;
-            --badge-bg: #e0e7ff;
-            --badge-text: #2563eb;
-            --hero-image-gradient: linear-gradient(145deg, #d9e2ef, #ffffff);
-            --nav-link-color: #334155;
-            --nav-link-hover: #2563eb;
-            --icon-color: #1e293b;
-            --scrollbar-track: #e2e8f0;
-            --scrollbar-thumb: #94a3b8;
-            --search-bg: white;
-            --modal-bg: white;
-            --modal-overlay: rgba(0, 0, 0, 0.5);
-        }
-
-        /* ===== ТЁМНАЯ ТЕМА ===== */
-        [data-theme="dark"] {
             --bg-primary: #0f172a;
             --bg-secondary: #1e293b;
             --bg-card: #1e293b;
@@ -72,15 +28,7 @@
             --btn-text: #0f172a;
             --btn-outline-border: #475569;
             --btn-outline-text: #f1f5f9;
-            --btn-outline-hover-bg: #1e293b;
-            --filter-btn-bg: #1e293b;
-            --filter-btn-border: #334155;
-            --filter-btn-text: #cbd5e1;
             --product-img-bg: #0f172a;
-            --product-img-hover: #1e293b;
-            --cart-btn-bg: #334155;
-            --cart-btn-text: #f1f5f9;
-            --feature-icon-gradient: linear-gradient(135deg, #1e3a5f, #4c1d95);
             --footer-bg: #1e293b;
             --gradient-start: #3b82f6;
             --gradient-end: #a78bfa;
@@ -93,46 +41,25 @@
             --scrollbar-track: #1e293b;
             --scrollbar-thumb: #475569;
             --search-bg: #1e293b;
-            --modal-bg: #1e293b;
-            --modal-overlay: rgba(0, 0, 0, 0.7);
+            --phone-color: #22c55e;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-primary);
             color: var(--text-primary);
             line-height: 1.5;
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
 
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+        ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 10px; }
 
-        ::-webkit-scrollbar-track {
-            background: var(--scrollbar-track);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--scrollbar-thumb);
-            border-radius: 10px;
-        }
-
-        .container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
 
         /* ===== HEADER ===== */
         header {
@@ -142,8 +69,6 @@
             backdrop-filter: blur(12px);
             background-color: var(--bg-header);
             border-bottom: 1px solid var(--border-card);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
-            transition: background-color 0.3s ease;
         }
 
         nav {
@@ -173,292 +98,34 @@
         .nav-links a {
             text-decoration: none;
             color: var(--nav-link-color);
-            transition: color 0.2s;
             font-size: 16px;
+            transition: color 0.2s;
         }
 
         .nav-links a:hover, .nav-links a.active {
             color: var(--nav-link-hover);
         }
 
-        .nav-icons {
+        .phone-header {
             display: flex;
             align-items: center;
-            gap: 20px;
-        }
-
-        .nav-icons a {
-            color: var(--icon-color);
-            font-size: 20px;
-            transition: transform 0.2s, color 0.2s;
-            position: relative;
-        }
-
-        .nav-icons a:hover {
-            transform: translateY(-2px);
-            color: var(--gradient-start);
-        }
-
-        .cart-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--gradient-start);
+            gap: 10px;
+            background: var(--phone-color);
+            padding: 10px 20px;
+            border-radius: 100px;
+            text-decoration: none;
             color: white;
-            font-size: 11px;
-            font-weight: 700;
-            min-width: 18px;
-            height: 18px;
-            border-radius: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 5px;
-            border: 2px solid var(--bg-header);
-        }
-
-        /* ===== ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ ===== */
-        .theme-toggle {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 20px;
-            color: var(--icon-color);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            transition: all 0.2s ease;
-            background: var(--cart-btn-bg);
-        }
-
-        .theme-toggle:hover {
-            transform: translateY(-2px);
-            color: var(--gradient-start);
-            background: var(--product-img-hover);
-        }
-
-        .theme-toggle .fa-sun {
-            display: none;
-        }
-
-        .theme-toggle .fa-moon {
-            display: inline-block;
-        }
-
-        [data-theme="dark"] .theme-toggle .fa-sun {
-            display: inline-block;
-        }
-
-        [data-theme="dark"] .theme-toggle .fa-moon {
-            display: none;
-        }
-
-        /* ===== МОДАЛЬНОЕ ОКНО КОРЗИНЫ ===== */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: var(--modal-overlay);
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(4px);
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .cart-modal {
-            background: var(--modal-bg);
-            border-radius: 32px;
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            border: 1px solid var(--border-light);
-        }
-
-        .cart-header {
-            padding: 24px 28px;
-            border-bottom: 1px solid var(--border-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .cart-header h3 {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--heading-color);
-        }
-
-        .cart-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: color 0.2s;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cart-close:hover {
-            background: var(--cart-btn-bg);
-            color: var(--text-primary);
-        }
-
-        .cart-items {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px 20px;
-        }
-
-        .cart-empty {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--text-muted);
-        }
-
-        .cart-empty i {
-            font-size: 64px;
-            margin-bottom: 16px;
-            opacity: 0.5;
-        }
-
-        .cart-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 16px;
-            background: var(--bg-card);
-            border-radius: 20px;
-            margin-bottom: 12px;
-            border: 1px solid var(--border-light);
-        }
-
-        .cart-item-img {
-            width: 60px;
-            height: 60px;
-            border-radius: 14px;
-            background: var(--product-img-bg);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--gradient-start);
-            font-size: 24px;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-
-        .cart-item-img img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .cart-item-info {
-            flex: 1;
-        }
-
-        .cart-item-name {
             font-weight: 600;
-            color: var(--heading-color);
-            margin-bottom: 4px;
-        }
-
-        .cart-item-price {
-            font-weight: 700;
-            color: var(--heading-color);
-        }
-
-        .cart-item-price small {
-            font-weight: 400;
-            color: var(--text-muted);
-            font-size: 12px;
-        }
-
-        .cart-item-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .cart-item-qty {
-            font-weight: 600;
-            color: var(--heading-color);
-            min-width: 24px;
-            text-align: center;
-        }
-
-        .cart-item-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 10px;
-            background: var(--cart-btn-bg);
-            border: none;
-            color: var(--cart-btn-text);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             transition: all 0.2s;
-            font-size: 14px;
         }
 
-        .cart-item-btn:hover {
-            background: var(--btn-bg);
-            color: var(--btn-text);
+        .phone-header:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3);
         }
 
-        .cart-item-remove {
-            color: #ef4444;
-        }
-
-        .cart-footer {
-            padding: 20px 28px 28px;
-            border-top: 1px solid var(--border-light);
-        }
-
-        .cart-total {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--heading-color);
-        }
-
-        .cart-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .cart-actions .btn {
-            flex: 1;
-            text-align: center;
-            padding: 14px 20px;
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--btn-outline-text);
-            box-shadow: none;
-            border: 1.5px solid var(--btn-outline-border);
+        .phone-header i {
+            font-size: 18px;
         }
 
         /* ===== ПОИСК ===== */
@@ -482,7 +149,6 @@
             background: var(--search-bg);
             color: var(--text-primary);
             outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .search-input:focus {
@@ -502,12 +168,6 @@
             border-radius: 100px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .search-btn:hover {
-            opacity: 0.9;
-            transform: scale(1.02);
         }
 
         /* ===== HERO ===== */
@@ -534,7 +194,6 @@
             font-size: 56px;
             font-weight: 700;
             line-height: 1.1;
-            letter-spacing: -1px;
             margin-bottom: 24px;
             color: var(--heading-color);
         }
@@ -553,6 +212,12 @@
             max-width: 500px;
         }
 
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
         .btn {
             display: inline-block;
             background: var(--btn-bg);
@@ -563,8 +228,8 @@
             text-decoration: none;
             transition: all 0.3s;
             border: 1px solid var(--btn-bg);
-            box-shadow: 0 10px 20px -5px rgba(15, 23, 42, 0.2);
             cursor: pointer;
+            font-size: 16px;
         }
 
         .btn:hover {
@@ -572,15 +237,28 @@
             opacity: 0.9;
         }
 
+        .btn-phone {
+            background: var(--phone-color);
+            border-color: var(--phone-color);
+            color: white;
+        }
+
+        .btn-phone:hover {
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--btn-outline-text);
+            box-shadow: none;
+            border: 1.5px solid var(--btn-outline-border);
+        }
+
         .hero-image {
             background: var(--hero-image-gradient);
             border-radius: 40px;
             padding: 20px;
-            box-shadow: 20px 20px 40px rgba(0,0,0,0.05), -10px -10px 30px rgba(255,255,255,0.8), inset 0 0 0 1px rgba(255,255,255,0.9);
-        }
-
-        [data-theme="dark"] .hero-image {
-            box-shadow: 20px 20px 40px rgba(0,0,0,0.3), -10px -10px 30px rgba(30, 41, 59, 0.5), inset 0 0 0 1px rgba(51, 65, 85, 0.5);
+            box-shadow: 20px 20px 40px rgba(0,0,0,0.3), -10px -10px 30px rgba(30, 41, 59, 0.5);
         }
 
         .hero-image img {
@@ -590,7 +268,7 @@
             display: block;
         }
 
-        /* ===== КАТЕГОРИИ-ВКЛАДКИ ===== */
+        /* ===== КАТЕГОРИИ ===== */
         .categories-tabs {
             display: flex;
             gap: 8px;
@@ -609,8 +287,8 @@
             color: var(--text-muted);
             cursor: pointer;
             border-radius: 100px;
-            transition: all 0.2s;
             white-space: nowrap;
+            transition: all 0.2s;
         }
 
         .category-tab:hover {
@@ -623,17 +301,16 @@
             color: var(--btn-text);
         }
 
-        /* ===== СЧЁТЧИК ТОВАРОВ ===== */
+        /* ===== КАРТОЧКИ ===== */
         .products-count {
             margin-bottom: 20px;
             color: var(--text-muted);
             font-size: 14px;
         }
 
-        /* ===== КАРТОЧКИ ===== */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
             margin-bottom: 40px;
         }
@@ -641,7 +318,7 @@
         .product-card {
             background: var(--bg-card);
             border-radius: 24px;
-            padding: 20px 18px 24px;
+            padding: 24px;
             box-shadow: var(--shadow-card);
             transition: all 0.3s;
             border: 1px solid var(--border-card);
@@ -658,12 +335,12 @@
         .product-img {
             background: var(--product-img-bg);
             border-radius: 18px;
-            height: 160px;
+            height: 180px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 16px;
-            font-size: 42px;
+            margin-bottom: 20px;
+            font-size: 48px;
             color: var(--gradient-start);
             overflow: hidden;
         }
@@ -691,90 +368,123 @@
 
         .product-title {
             font-weight: 700;
-            font-size: 18px;
-            margin-bottom: 6px;
+            font-size: 20px;
+            margin-bottom: 8px;
             color: var(--heading-color);
         }
 
         .product-desc {
             color: var(--text-muted);
-            font-size: 13px;
-            margin-bottom: 16px;
-        }
-
-        .product-footer {
-            margin-top: auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
         }
 
         .product-price {
+            margin-top: auto;
             font-weight: 700;
-            font-size: 20px;
+            font-size: 24px;
             color: var(--heading-color);
         }
 
         .product-price small {
             font-weight: 400;
-            font-size: 13px;
+            font-size: 14px;
             color: var(--text-muted);
         }
 
-        .cart-btn {
-            background: var(--cart-btn-bg);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
+        /* ===== БАННЕР С ТЕЛЕФОНОМ ===== */
+        .cta-banner {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 40px;
+            padding: 50px 40px;
+            margin: 60px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .cta-banner h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .cta-banner p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .cta-phone {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            color: var(--cart-btn-text);
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .cart-btn:hover {
-            background: var(--btn-bg);
+            gap: 12px;
+            background: white;
+            padding: 18px 40px;
+            border-radius: 100px;
+            text-decoration: none;
             color: var(--btn-text);
+            font-size: 24px;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .cta-phone:hover {
             transform: scale(1.05);
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
         }
 
-        /* ===== FEATURES ===== */
-        .features {
-            padding: 50px 0 60px;
-            border-top: 1px solid var(--border-light);
+        .cta-phone i {
+            color: var(--phone-color);
+            font-size: 28px;
         }
 
-        .features-grid {
+        /* ===== КОНТАКТЫ ===== */
+        .contacts-section {
+            padding: 60px 0;
+        }
+
+        .contacts-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
+            gap: 30px;
         }
 
-        .feature-icon {
-            background: var(--feature-icon-gradient);
-            width: 56px;
-            height: 56px;
-            border-radius: 18px;
+        .contact-card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid var(--border-light);
+        }
+
+        .contact-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
-            color: var(--gradient-start);
-            margin-bottom: 24px;
+            margin: 0 auto 20px;
+            font-size: 30px;
+            color: white;
         }
 
-        .feature-item h3 {
-            font-size: 20px;
-            margin-bottom: 10px;
+        .contact-card h3 {
             color: var(--heading-color);
+            margin-bottom: 12px;
         }
 
-        .feature-item p {
+        .contact-card p, .contact-card a {
             color: var(--text-muted);
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .contact-card a:hover {
+            color: var(--gradient-start);
         }
 
         /* ===== FOOTER ===== */
@@ -806,10 +516,6 @@
             font-weight: 500;
         }
 
-        .footer-links a:hover {
-            color: var(--nav-link-hover);
-        }
-
         .no-results {
             text-align: center;
             padding: 60px 20px;
@@ -818,7 +524,6 @@
             grid-column: 1 / -1;
         }
 
-        /* Мобильная адаптация */
         @media (max-width: 768px) {
             .hero {
                 grid-template-columns: 1fr;
@@ -834,9 +539,8 @@
                 display: none;
             }
             
-            .features-grid {
+            .contacts-grid {
                 grid-template-columns: 1fr;
-                gap: 30px;
             }
             
             .footer-content {
@@ -848,6 +552,14 @@
                 overflow-x: auto;
                 flex-wrap: nowrap;
                 padding-bottom: 15px;
+            }
+
+            .phone-header span {
+                display: none;
+            }
+            
+            .phone-header {
+                padding: 10px 15px;
             }
         }
     </style>
@@ -861,45 +573,15 @@
             <div class="nav-links">
                 <a href="#" class="active">Главная</a>
                 <a href="#catalog">Каталог</a>
-                <a href="#delivery">Доставка</a>
                 <a href="#contacts">Контакты</a>
             </div>
-            <div class="nav-icons">
-                <a href="#"><i class="far fa-heart"></i></a>
-                <a href="#"><i class="far fa-user"></i></a>
-                <a href="#" id="cartIcon">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
-                </a>
-                <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
-                    <i class="fas fa-moon"></i>
-                    <i class="fas fa-sun"></i>
-                </button>
-            </div>
+            <a href="tel:+79991234567" class="phone-header">
+                <i class="fas fa-phone-alt"></i>
+                <span>+7 (999) 123-45-67</span>
+            </a>
         </nav>
     </div>
 </header>
-
-<!-- Модальное окно корзины -->
-<div class="modal-overlay" id="cartModal">
-    <div class="cart-modal">
-        <div class="cart-header">
-            <h3>Корзина</h3>
-            <button class="cart-close" id="closeCartModal"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="cart-items" id="cartItemsContainer"></div>
-        <div class="cart-footer" id="cartFooter" style="display: none;">
-            <div class="cart-total">
-                <span>Итого:</span>
-                <span id="cartTotal">0 ₽</span>
-            </div>
-            <div class="cart-actions">
-                <button class="btn btn-outline" id="clearCartBtn">Очистить</button>
-                <button class="btn" id="checkoutBtn">Оформить заказ</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <main>
     <div class="container">
@@ -916,14 +598,17 @@
             <div class="hero-content">
                 <span class="hero-badge">🏗️ Стройматериалы с доставкой</span>
                 <h1>Всё для <span>стройки</span> в одном месте</h1>
-                <p>ЖБИ, пиломатериалы, сухие смеси, тротуарная плитка и многое другое. Прямые поставки, честные цены.</p>
-                <div>
-                    <a href="#catalog" class="btn">Смотреть каталог <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
-                    <a href="#" class="btn btn-outline">Консультация</a>
+                <p>ЖБИ, пиломатериалы, сухие смеси, тротуарная плитка. Звоните — поможем с выбором!</p>
+                <div class="hero-buttons">
+                    <a href="#catalog" class="btn">Смотреть каталог</a>
+                    <a href="tel:+79991234567" class="btn btn-phone">
+                        <i class="fas fa-phone-alt" style="margin-right: 8px;"></i>
+                        Позвонить
+                    </a>
                 </div>
             </div>
             <div class="hero-image">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%23e2e8f0'/%3E%3Cpath d='M0 200 L400 100 L400 300 L0 300 Z' fill='%2394a3b8'/%3E%3Crect x='50' y='50' width='120' height='120' fill='%232563eb' rx='20'/%3E%3Ccircle cx='250' cy='140' r='50' fill='%237c3aed'/%3E%3Crect x='280' y='50' width='80' height='120' fill='%230f172a' rx='10'/%3E%3C/svg%3E" alt="Стройматериалы">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%231e293b'/%3E%3Cpath d='M0 200 L400 100 L400 300 L0 300 Z' fill='%23334155'/%3E%3Crect x='50' y='50' width='120' height='120' fill='%233b82f6' rx='20'/%3E%3Ccircle cx='250' cy='140' r='50' fill='%23a78bfa'/%3E%3Crect x='280' y='50' width='80' height='120' fill='%23f8fafc' rx='10'/%3E%3C/svg%3E" alt="Стройматериалы">
             </div>
         </section>
 
@@ -938,50 +623,58 @@
         </div>
 
         <section id="catalog">
-            <div class="section-header">
-                <h2 style="font-size: 32px; font-weight: 700; color: var(--heading-color); margin-bottom: 10px;">Каталог товаров</h2>
-            </div>
-            
+            <h2 style="font-size: 32px; font-weight: 700; color: var(--heading-color); margin-bottom: 10px;">Каталог товаров</h2>
             <div class="products-count" id="productsCount">Показано товаров: <span id="countValue">0</span></div>
-            
             <div class="products-grid" id="productsGrid"></div>
         </section>
-    </div>
 
-    <section class="features" id="delivery">
-        <div class="container">
-            <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="fas fa-truck"></i></div>
-                    <h3>Быстрая доставка</h3>
-                    <p>Собственный автопарк. Привезём материалы на объект в день заказа.</p>
+        <!-- Баннер с телефоном -->
+        <div class="cta-banner">
+            <h2>Нужна консультация или расчёт?</h2>
+            <p>Позвоните нам прямо сейчас — поможем подобрать материалы и рассчитаем стоимость!</p>
+            <a href="tel:+79991234567" class="cta-phone">
+                <i class="fas fa-phone-alt"></i>
+                +7 (999) 123-45-67
+            </a>
+        </div>
+
+        <!-- Контакты -->
+        <section id="contacts" class="contacts-section">
+            <h2 style="font-size: 32px; font-weight: 700; color: var(--heading-color); margin-bottom: 40px; text-align: center;">Контакты</h2>
+            <div class="contacts-grid">
+                <div class="contact-card">
+                    <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
+                    <h3>Телефон</h3>
+                    <a href="tel:+79991234567">+7 (999) 123-45-67</a>
+                    <p style="font-size: 14px; margin-top: 8px;">Ежедневно с 8:00 до 20:00</p>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="fas fa-file-invoice"></i></div>
-                    <h3>Сертификаты качества</h3>
-                    <p>Вся продукция соответствует ГОСТ и имеет паспорта качества.</p>
+                <div class="contact-card">
+                    <div class="contact-icon"><i class="fab fa-whatsapp"></i></div>
+                    <h3>WhatsApp</h3>
+                    <a href="https://wa.me/79991234567">+7 (999) 123-45-67</a>
+                    <p style="font-size: 14px; margin-top: 8px;">Отвечаем в течение 15 минут</p>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-icon"><i class="fas fa-calculator"></i></div>
-                    <h3>Расчёт сметы</h3>
-                    <p>Бесплатно рассчитаем количество материалов для вашего проекта.</p>
+                <div class="contact-card">
+                    <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <h3>Адрес</h3>
+                    <p>г. Москва, ул. Строителей, 15</p>
+                    <p style="font-size: 14px; margin-top: 8px;">Самовывоз и доставка</p>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 </main>
 
-<footer id="contacts">
+<footer>
     <div class="container">
         <div class="footer-content">
             <div class="footer-copyright">
-                © 2026 СТРОЙ. Все права защищены. stroy13.github.io
+                © 2026 СТРОЙ. Все права защищены.
             </div>
             <div class="footer-links">
                 <a href="#">Политика</a>
                 <a href="#">Доставка</a>
-                <a href="#"><i class="fab fa-telegram"></i> Telegram</a>
-                <a href="#"><i class="fab fa-github"></i> GitHub</a>
+                <a href="tel:+79991234567"><i class="fas fa-phone-alt"></i> Позвонить</a>
             </div>
         </div>
     </div>
@@ -989,7 +682,7 @@
 
 <script>
     (function() {
-        // ===== ПОЛНАЯ БАЗА ТОВАРОВ (64 позиции) =====
+        // Полная база товаров
         const products = [
             // Цемент и смеси (7)
             { id: 1, name: "Цемент 50кг", category: "cement", subcategory: "Цемент", price: 550, unit: "шт", desc: "Портландцемент М500, 50 кг", image: "" },
@@ -998,7 +691,7 @@
             { id: 4, name: "ЦПС М150", category: "cement", subcategory: "Смеси", price: 190, unit: "шт", desc: "Цементно-песчаная смесь М150", image: "" },
             { id: 5, name: "ЦПС М200", category: "cement", subcategory: "Смеси", price: 210, unit: "шт", desc: "Цементно-песчаная смесь М200", image: "" },
             { id: 6, name: "ЦПС М300", category: "cement", subcategory: "Смеси", price: 260, unit: "шт", desc: "Цементно-песчаная смесь М300", image: "" },
-            { id: 7, name: "Шпаклёвка LR финишная", category: "cement", subcategory: "Смеси", price: 430, unit: "шт", desc: "Финишная шпаклёвка, высокое качество", image: "" },
+            { id: 7, name: "Шпаклёвка LR финишная", category: "cement", subcategory: "Смеси", price: 430, unit: "шт", desc: "Финишная шпаклёвка", image: "" },
             
             // Кольца ЖБИ (18)
             { id: 8, name: "Кольцо 0.8м", category: "rings", subcategory: "Кольца ЖБИ", price: 2600, unit: "шт", desc: "Железобетонное кольцо, диаметр 0.8 м", image: "" },
@@ -1006,334 +699,101 @@
             { id: 10, name: "Кольцо 1.5м (в.0.8)", category: "rings", subcategory: "Кольца ЖБИ", price: 5300, unit: "шт", desc: "Кольцо ЖБИ 1.5 м, высота 0.8 м", image: "" },
             { id: 11, name: "Кольцо 1.5м (в.0.9)", category: "rings", subcategory: "Кольца ЖБИ", price: 5500, unit: "шт", desc: "Кольцо ЖБИ 1.5 м, высота 0.9 м", image: "" },
             { id: 12, name: "Кольцо 2.0м (в.0.9)", category: "rings", subcategory: "Кольца ЖБИ", price: 10000, unit: "шт", desc: "Кольцо ЖБИ 2.0 м, высота 0.9 м", image: "" },
-            { id: 13, name: "Половинка кольца 1м", category: "rings", subcategory: "Кольца ЖБИ", price: 2200, unit: "шт", desc: "Половинка железобетонного кольца 1 м", image: "" },
-            { id: 14, name: "Половинка кольца 1.5м", category: "rings", subcategory: "Кольца ЖБИ", price: 4200, unit: "шт", desc: "Половинка железобетонного кольца 1.5 м", image: "" },
-            { id: 15, name: "Крышка с люком 0.8м", category: "rings", subcategory: "Крышки и днища", price: 3500, unit: "шт", desc: "Крышка с люком для кольца 0.8 м", image: "" },
-            { id: 16, name: "Крышка с люком 1м", category: "rings", subcategory: "Крышки и днища", price: 3700, unit: "шт", desc: "Крышка с люком для кольца 1 м", image: "" },
-            { id: 17, name: "Крышка с люком 1.5м", category: "rings", subcategory: "Крышки и днища", price: 6000, unit: "шт", desc: "Крышка с люком для кольца 1.5 м", image: "" },
-            { id: 18, name: "Крышка без люка 1.5м", category: "rings", subcategory: "Крышки и днища", price: 5500, unit: "шт", desc: "Крышка без люка для кольца 1.5 м", image: "" },
-            { id: 19, name: "Крышка с люком 2.0м", category: "rings", subcategory: "Крышки и днища", price: 10000, unit: "шт", desc: "Крышка с люком для кольца 2.0 м", image: "" },
-            { id: 20, name: "Донышко 0.8м", category: "rings", subcategory: "Крышки и днища", price: 2000, unit: "шт", desc: "Днище для кольца 0.8 м", image: "" },
-            { id: 21, name: "Донышко 1м", category: "rings", subcategory: "Крышки и днища", price: 2200, unit: "шт", desc: "Днище для кольца 1 м", image: "" },
-            { id: 22, name: "Донышко 1.5м", category: "rings", subcategory: "Крышки и днища", price: 4000, unit: "шт", desc: "Днище для кольца 1.5 м", image: "" },
-            { id: 23, name: "Конус люк 1м", category: "rings", subcategory: "Крышки и днища", price: 2200, unit: "шт", desc: "Конус с люком 1 м", image: "" },
-            { id: 24, name: "Люк газонный", category: "rings", subcategory: "Крышки и днища", price: 700, unit: "шт", desc: "Газонный люк", image: "" },
+            { id: 13, name: "Половинка кольца 1м", category: "rings", subcategory: "Кольца ЖБИ", price: 2200, unit: "шт", desc: "Половинка кольца 1 м", image: "" },
+            { id: 14, name: "Половинка кольца 1.5м", category: "rings", subcategory: "Кольца ЖБИ", price: 4200, unit: "шт", desc: "Половинка кольца 1.5 м", image: "" },
+            { id: 15, name: "Крышка с люком 0.8м", category: "rings", subcategory: "Крышки", price: 3500, unit: "шт", desc: "Крышка с люком 0.8 м", image: "" },
+            { id: 16, name: "Крышка с люком 1м", category: "rings", subcategory: "Крышки", price: 3700, unit: "шт", desc: "Крышка с люком 1 м", image: "" },
+            { id: 17, name: "Крышка с люком 1.5м", category: "rings", subcategory: "Крышки", price: 6000, unit: "шт", desc: "Крышка с люком 1.5 м", image: "" },
+            { id: 18, name: "Крышка без люка 1.5м", category: "rings", subcategory: "Крышки", price: 5500, unit: "шт", desc: "Крышка без люка 1.5 м", image: "" },
+            { id: 19, name: "Крышка с люком 2.0м", category: "rings", subcategory: "Крышки", price: 10000, unit: "шт", desc: "Крышка с люком 2.0 м", image: "" },
+            { id: 20, name: "Донышко 0.8м", category: "rings", subcategory: "Днища", price: 2000, unit: "шт", desc: "Днище 0.8 м", image: "" },
+            { id: 21, name: "Донышко 1м", category: "rings", subcategory: "Днища", price: 2200, unit: "шт", desc: "Днище 1 м", image: "" },
+            { id: 22, name: "Донышко 1.5м", category: "rings", subcategory: "Днища", price: 4000, unit: "шт", desc: "Днище 1.5 м", image: "" },
+            { id: 23, name: "Конус люк 1м", category: "rings", subcategory: "Крышки", price: 2200, unit: "шт", desc: "Конус с люком 1 м", image: "" },
+            { id: 24, name: "Люк газонный", category: "rings", subcategory: "Крышки", price: 700, unit: "шт", desc: "Газонный люк", image: "" },
             
             // Плитка и брусчатка (17)
-            { id: 25, name: "Плитка серая 30x30", category: "tiles", subcategory: "Плитка", price: 550, unit: "м²", desc: "Тротуарная плитка серая, 30x30 см", image: "" },
-            { id: 26, name: "Плитка красная 30x30", category: "tiles", subcategory: "Плитка", price: 750, unit: "м²", desc: "Тротуарная плитка красная, 30x30 см", image: "" },
-            { id: 27, name: "Плитка серая 40x40", category: "tiles", subcategory: "Плитка", price: 140, unit: "шт", desc: "Плитка серая 40x40 см, цена за штуку", image: "" },
-            { id: 28, name: "Плитка красная 40x40", category: "tiles", subcategory: "Плитка", price: 200, unit: "шт", desc: "Плитка красная 40x40 см, цена за штуку", image: "" },
-            { id: 29, name: "Плитка 30x30 (брак)", category: "tiles", subcategory: "Плитка", price: 400, unit: "м²", desc: "Плитка 30x30 см, 2 сорт (брак)", image: "" },
-            { id: 30, name: "Плитка 40x40 (брак)", category: "tiles", subcategory: "Плитка", price: 90, unit: "шт", desc: "Плитка 40x40 см, 2 сорт (брак)", image: "" },
-            { id: 31, name: "Бордюр вибролитьё 1м", category: "tiles", subcategory: "Бордюры", price: 250, unit: "шт", desc: "Бордюр вибролитьевой, 1 метр", image: "" },
-            { id: 32, name: "Бордюр вибролитьё 1м красный", category: "tiles", subcategory: "Бордюры", price: 400, unit: "шт", desc: "Бордюр вибролитьевой красный, 1 метр", image: "" },
-            { id: 33, name: "Бордюр вибропресс 1м", category: "tiles", subcategory: "Бордюры", price: 300, unit: "шт", desc: "Бордюр вибропрессованный, 1 метр", image: "" },
-            { id: 34, name: "Бордюр вибролитьё 0.5м", category: "tiles", subcategory: "Бордюры", price: 150, unit: "шт", desc: "Бордюр вибролитьевой, 0.5 метра", image: "" },
-            { id: 35, name: "Слив", category: "tiles", subcategory: "Бордюры", price: 150, unit: "шт", desc: "Слив водосточный бетонный", image: "" },
-            { id: 36, name: "Дорожный бордюр 1м", category: "tiles", subcategory: "Бордюры", price: 700, unit: "шт", desc: "Бордюр дорожный, 1 метр", image: "" },
-            { id: 37, name: "Брусчатка 4см", category: "tiles", subcategory: "Брусчатка", price: 1000, unit: "м²", desc: "Брусчатка серая, толщина 4 см, 50 шт/м²", image: "" },
-            { id: 38, name: "Брусчатка 6см", category: "tiles", subcategory: "Брусчатка", price: 1200, unit: "м²", desc: "Брусчатка серая, толщина 6 см, 50 шт/м²", image: "" },
-            { id: 39, name: "Брусчатка красная 4см", category: "tiles", subcategory: "Брусчатка", price: 1400, unit: "м²", desc: "Брусчатка красная, толщина 4 см", image: "" },
-            { id: 40, name: "Брусчатка коричневая 4см", category: "tiles", subcategory: "Брусчатка", price: 1400, unit: "м²", desc: "Брусчатка коричневая, толщина 4 см", image: "" },
-            { id: 41, name: "Брусчатка жёлтая 4см", category: "tiles", subcategory: "Брусчатка", price: 1500, unit: "м²", desc: "Брусчатка жёлтая, толщина 4 см", image: "" },
+            { id: 25, name: "Плитка серая 30x30", category: "tiles", subcategory: "Плитка", price: 550, unit: "м²", desc: "Тротуарная плитка серая", image: "" },
+            { id: 26, name: "Плитка красная 30x30", category: "tiles", subcategory: "Плитка", price: 750, unit: "м²", desc: "Тротуарная плитка красная", image: "" },
+            { id: 27, name: "Плитка серая 40x40", category: "tiles", subcategory: "Плитка", price: 140, unit: "шт", desc: "Плитка серая 40x40 см", image: "" },
+            { id: 28, name: "Плитка красная 40x40", category: "tiles", subcategory: "Плитка", price: 200, unit: "шт", desc: "Плитка красная 40x40 см", image: "" },
+            { id: 29, name: "Плитка 30x30 (брак)", category: "tiles", subcategory: "Плитка", price: 400, unit: "м²", desc: "Плитка 30x30 см, 2 сорт", image: "" },
+            { id: 30, name: "Плитка 40x40 (брак)", category: "tiles", subcategory: "Плитка", price: 90, unit: "шт", desc: "Плитка 40x40 см, 2 сорт", image: "" },
+            { id: 31, name: "Бордюр вибролитьё 1м", category: "tiles", subcategory: "Бордюры", price: 250, unit: "шт", desc: "Бордюр вибролитьевой", image: "" },
+            { id: 32, name: "Бордюр вибролитьё 1м красный", category: "tiles", subcategory: "Бордюры", price: 400, unit: "шт", desc: "Бордюр красный", image: "" },
+            { id: 33, name: "Бордюр вибропресс 1м", category: "tiles", subcategory: "Бордюры", price: 300, unit: "шт", desc: "Бордюр вибропрессованный", image: "" },
+            { id: 34, name: "Бордюр вибролитьё 0.5м", category: "tiles", subcategory: "Бордюры", price: 150, unit: "шт", desc: "Бордюр 0.5 метра", image: "" },
+            { id: 35, name: "Слив", category: "tiles", subcategory: "Бордюры", price: 150, unit: "шт", desc: "Слив водосточный", image: "" },
+            { id: 36, name: "Дорожный бордюр 1м", category: "tiles", subcategory: "Бордюры", price: 700, unit: "шт", desc: "Бордюр дорожный", image: "" },
+            { id: 37, name: "Брусчатка 4см", category: "tiles", subcategory: "Брусчатка", price: 1000, unit: "м²", desc: "Брусчатка серая 4 см", image: "" },
+            { id: 38, name: "Брусчатка 6см", category: "tiles", subcategory: "Брусчатка", price: 1200, unit: "м²", desc: "Брусчатка серая 6 см", image: "" },
+            { id: 39, name: "Брусчатка красная 4см", category: "tiles", subcategory: "Брусчатка", price: 1400, unit: "м²", desc: "Брусчатка красная", image: "" },
+            { id: 40, name: "Брусчатка коричневая 4см", category: "tiles", subcategory: "Брусчатка", price: 1400, unit: "м²", desc: "Брусчатка коричневая", image: "" },
+            { id: 41, name: "Брусчатка жёлтая 4см", category: "tiles", subcategory: "Брусчатка", price: 1500, unit: "м²", desc: "Брусчатка жёлтая", image: "" },
             
             // Кирпич и блоки (8)
-            { id: 42, name: "Кирпич одинарный трубный", category: "bricks", subcategory: "Кирпич", price: 22, unit: "шт", desc: "Кирпич трубный одинарный, 448 шт в пачке", image: "" },
-            { id: 43, name: "Кирпич одинарный полнотелый", category: "bricks", subcategory: "Кирпич", price: 23, unit: "шт", desc: "Кирпич полнотелый одинарный, 448 шт в пачке", image: "" },
-            { id: 44, name: "Кирпич полуторный трубный", category: "bricks", subcategory: "Кирпич", price: 25, unit: "шт", desc: "Кирпич трубный полуторный, 352 шт в пачке", image: "" },
-            { id: 45, name: "Кирпич полуторный щелевой", category: "bricks", subcategory: "Кирпич", price: 22, unit: "шт", desc: "Кирпич щелевой полуторный, 352 шт в пачке", image: "" },
-            { id: 46, name: "Кирпич облицовочный красный", category: "bricks", subcategory: "Кирпич", price: 26, unit: "шт", desc: "Кирпич облицовочный красный, 396 шт в пачке", image: "" },
-            { id: 47, name: "Кирпич облицовочный коричневый", category: "bricks", subcategory: "Кирпич", price: 40, unit: "шт", desc: "Кирпич облицовочный коричневый", image: "" },
-            { id: 48, name: "Газоблок 600x200x300", category: "bricks", subcategory: "Блоки", price: 220, unit: "шт", desc: "Газобетонный блок 600x200x300 мм", image: "" },
-            { id: 49, name: "Сетка 100x100 (2x1м)", category: "bricks", subcategory: "Сетка", price: 250, unit: "шт", desc: "Сетка кладочная, ячейка 100x100, 2x1 м", image: "" },
+            { id: 42, name: "Кирпич одинарный трубный", category: "bricks", subcategory: "Кирпич", price: 22, unit: "шт", desc: "448 шт в пачке", image: "" },
+            { id: 43, name: "Кирпич одинарный полнотелый", category: "bricks", subcategory: "Кирпич", price: 23, unit: "шт", desc: "448 шт в пачке", image: "" },
+            { id: 44, name: "Кирпич полуторный трубный", category: "bricks", subcategory: "Кирпич", price: 25, unit: "шт", desc: "352 шт в пачке", image: "" },
+            { id: 45, name: "Кирпич полуторный щелевой", category: "bricks", subcategory: "Кирпич", price: 22, unit: "шт", desc: "352 шт в пачке", image: "" },
+            { id: 46, name: "Кирпич облицовочный красный", category: "bricks", subcategory: "Кирпич", price: 26, unit: "шт", desc: "396 шт в пачке", image: "" },
+            { id: 47, name: "Кирпич облицовочный коричневый", category: "bricks", subcategory: "Кирпич", price: 40, unit: "шт", desc: "Коричневый", image: "" },
+            { id: 48, name: "Газоблок 600x200x300", category: "bricks", subcategory: "Блоки", price: 220, unit: "шт", desc: "Газобетонный блок", image: "" },
+            { id: 49, name: "Сетка 100x100 (2x1м)", category: "bricks", subcategory: "Сетка", price: 250, unit: "шт", desc: "Сетка кладочная", image: "" },
             
             // Пиломатериалы (8)
-            { id: 50, name: "Тёс 200x25x6м (2 сорт)", category: "wood", subcategory: "Доска", price: 485, unit: "шт", desc: "Тёс 200x25x6м, 2 сорт с обзолом, 33 шт/м³", image: "" },
-            { id: 51, name: "Тёс 150x25x6м (2 сорт)", category: "wood", subcategory: "Доска", price: 365, unit: "шт", desc: "Тёс 150x25x6м, 2 сорт с обзолом, 44 шт/м³", image: "" },
-            { id: 52, name: "Тёс 200x25x6м (1 сорт)", category: "wood", subcategory: "Доска", price: 450, unit: "шт", desc: "Тёс 200x25x6м, 1 сорт, 33 шт/м³", image: "" },
-            { id: 53, name: "Доска 150x50x6м", category: "wood", subcategory: "Доска", price: 860, unit: "шт", desc: "Доска обрезная 150x50x6м, 1 сорт", image: "" },
-            { id: 54, name: "Доска 200x50x6м", category: "wood", subcategory: "Доска", price: 1380, unit: "шт", desc: "Доска обрезная 200x50x6м, 1 сорт", image: "" },
-            { id: 55, name: "Брус 150x150x6м", category: "wood", subcategory: "Брус", price: 2100, unit: "шт", desc: "Брус 150x150x6м, 1 сорт", image: "" },
-            { id: 56, name: "Брус 150x100x6м", category: "wood", subcategory: "Брус", price: 950, unit: "шт", desc: "Брус 150x100x6м, 1 сорт", image: "" },
-            { id: 57, name: "Брус 100x50x6м", category: "wood", subcategory: "Брус", price: 575, unit: "шт", desc: "Брус 100x50x6м, 1 сорт", image: "" },
+            { id: 50, name: "Тёс 200x25x6м (2 сорт)", category: "wood", subcategory: "Доска", price: 485, unit: "шт", desc: "2 сорт с обзолом", image: "" },
+            { id: 51, name: "Тёс 150x25x6м (2 сорт)", category: "wood", subcategory: "Доска", price: 365, unit: "шт", desc: "2 сорт с обзолом", image: "" },
+            { id: 52, name: "Тёс 200x25x6м (1 сорт)", category: "wood", subcategory: "Доска", price: 450, unit: "шт", desc: "1 сорт", image: "" },
+            { id: 53, name: "Доска 150x50x6м", category: "wood", subcategory: "Доска", price: 860, unit: "шт", desc: "1 сорт", image: "" },
+            { id: 54, name: "Доска 200x50x6м", category: "wood", subcategory: "Доска", price: 1380, unit: "шт", desc: "1 сорт", image: "" },
+            { id: 55, name: "Брус 150x150x6м", category: "wood", subcategory: "Брус", price: 2100, unit: "шт", desc: "1 сорт", image: "" },
+            { id: 56, name: "Брус 150x100x6м", category: "wood", subcategory: "Брус", price: 950, unit: "шт", desc: "1 сорт", image: "" },
+            { id: 57, name: "Брус 100x50x6м", category: "wood", subcategory: "Брус", price: 575, unit: "шт", desc: "1 сорт", image: "" },
             
-            // Трубы и комплектующие (6)
-            { id: 58, name: "Труба 3м", category: "pipes", subcategory: "Трубы", price: 1100, unit: "шт", desc: "Труба асбестоцементная, 3 метра", image: "" },
-            { id: 59, name: "Труба 2м", category: "pipes", subcategory: "Трубы", price: 750, unit: "шт", desc: "Труба асбестоцементная, 2 метра", image: "" },
-            { id: 60, name: "Труба 1м", category: "pipes", subcategory: "Трубы", price: 450, unit: "шт", desc: "Труба асбестоцементная, 1 метр", image: "" },
-            { id: 61, name: "Загиб 45°", category: "pipes", subcategory: "Комплектующие", price: 100, unit: "шт", desc: "Загиб (отвод) 45 градусов", image: "" },
-            { id: 62, name: "Загиб 90°", category: "pipes", subcategory: "Комплектующие", price: 100, unit: "шт", desc: "Загиб (отвод) 90 градусов", image: "" },
-            { id: 63, name: "Тройник", category: "pipes", subcategory: "Комплектующие", price: 180, unit: "шт", desc: "Тройник для труб", image: "" }
+            // Трубы (6)
+            { id: 58, name: "Труба 3м", category: "pipes", subcategory: "Трубы", price: 1100, unit: "шт", desc: "Труба 3 метра", image: "" },
+            { id: 59, name: "Труба 2м", category: "pipes", subcategory: "Трубы", price: 750, unit: "шт", desc: "Труба 2 метра", image: "" },
+            { id: 60, name: "Труба 1м", category: "pipes", subcategory: "Трубы", price: 450, unit: "шт", desc: "Труба 1 метр", image: "" },
+            { id: 61, name: "Загиб 45°", category: "pipes", subcategory: "Комплектующие", price: 100, unit: "шт", desc: "Отвод 45°", image: "" },
+            { id: 62, name: "Загиб 90°", category: "pipes", subcategory: "Комплектующие", price: 100, unit: "шт", desc: "Отвод 90°", image: "" },
+            { id: 63, name: "Тройник", category: "pipes", subcategory: "Комплектующие", price: 180, unit: "шт", desc: "Тройник", image: "" }
         ];
 
-        // ===== КОРЗИНА =====
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        function formatPrice(p) { return p.toLocaleString('ru-RU'); }
+        function getIcon(c) { const i = { cement: 'fa-cube', rings: 'fa-circle', tiles: 'fa-border-all', bricks: 'fa-cubes', wood: 'fa-tree', pipes: 'fa-grip-lines' }; return i[c] || 'fa-box'; }
 
-        function saveCart() {
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartUI();
-        }
-
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            if (!product) return false;
-
-            const existingItem = cart.find(item => item.id === productId);
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    unit: product.unit,
-                    image: product.image,
-                    category: product.category,
-                    quantity: 1
-                });
-            }
-            saveCart();
-            return true;
-        }
-
-        function removeFromCart(productId) {
-            cart = cart.filter(item => item.id !== productId);
-            saveCart();
-        }
-
-        function updateQuantity(productId, delta) {
-            const item = cart.find(item => item.id === productId);
-            if (item) {
-                item.quantity += delta;
-                if (item.quantity <= 0) {
-                    removeFromCart(productId);
-                } else {
-                    saveCart();
-                }
-            }
-        }
-
-        function clearCart() {
-            cart = [];
-            saveCart();
-        }
-
-        function getCartTotal() {
-            return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        }
-
-        function getCartCount() {
-            return cart.reduce((sum, item) => sum + item.quantity, 0);
-        }
-
-        function updateCartUI() {
-            const badge = document.getElementById('cartBadge');
-            const count = getCartCount();
-            
-            if (count > 0) {
-                badge.textContent = count;
-                badge.style.display = 'flex';
-            } else {
-                badge.style.display = 'none';
-            }
-            
-            renderCartModal();
-        }
-
-        function renderCartModal() {
-            const container = document.getElementById('cartItemsContainer');
-            const footer = document.getElementById('cartFooter');
-            const totalSpan = document.getElementById('cartTotal');
-            
-            if (cart.length === 0) {
-                container.innerHTML = `
-                    <div class="cart-empty">
-                        <i class="fas fa-shopping-cart"></i>
-                        <p>Ваша корзина пуста</p>
-                        <p style="font-size: 14px; margin-top: 8px;">Добавьте товары из каталога</p>
-                    </div>
-                `;
-                footer.style.display = 'none';
-                return;
-            }
-            
-            footer.style.display = 'block';
-            
-            container.innerHTML = cart.map(item => {
-                const product = products.find(p => p.id === item.id);
-                const icon = getIcon(item.category || product?.category || 'cement');
-                
-                return `
-                    <div class="cart-item">
-                        <div class="cart-item-img">
-                            ${item.image 
-                                ? `<img src="${item.image}" alt="${item.name}">`
-                                : `<i class="fas ${icon}"></i>`
-                            }
-                        </div>
-                        <div class="cart-item-info">
-                            <div class="cart-item-name">${item.name}</div>
-                            <div class="cart-item-price">${formatPrice(item.price)} ₽ <small>/${item.unit}</small></div>
-                        </div>
-                        <div class="cart-item-controls">
-                            <button class="cart-item-btn" onclick="window.updateCartQty(${item.id}, -1)">−</button>
-                            <span class="cart-item-qty">${item.quantity}</span>
-                            <button class="cart-item-btn" onclick="window.updateCartQty(${item.id}, 1)">+</button>
-                            <button class="cart-item-btn cart-item-remove" onclick="window.removeCartItem(${item.id})">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-            
-            totalSpan.textContent = formatPrice(getCartTotal()) + ' ₽';
-        }
-
-        window.updateCartQty = function(id, delta) { updateQuantity(id, delta); };
-        window.removeCartItem = function(id) { removeFromCart(id); };
-
-        function formatPrice(price) {
-            return price.toLocaleString('ru-RU');
-        }
-
-        function getIcon(category) {
-            const icons = {
-                'cement': 'fa-cube',
-                'rings': 'fa-circle',
-                'tiles': 'fa-border-all',
-                'bricks': 'fa-cubes',
-                'wood': 'fa-tree',
-                'pipes': 'fa-grip-lines'
-            };
-            return icons[category] || 'fa-box';
-        }
-
-        // ===== ОТОБРАЖЕНИЕ ТОВАРОВ =====
         const grid = document.getElementById('productsGrid');
-        const countSpan = document.getElementById('countValue');
-        const searchInput = document.getElementById('searchInput');
-        const searchBtn = document.getElementById('searchBtn');
-        
-        let currentCategory = 'all';
-        let searchQuery = '';
+        const cnt = document.getElementById('countValue');
+        const sInp = document.getElementById('searchInput');
+        let curCat = 'all', sQ = '';
 
-        function renderProducts() {
-            let filtered = products.filter(p => {
-                if (currentCategory !== 'all' && p.category !== currentCategory) return false;
-                if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-                return true;
-            });
-
-            countSpan.textContent = filtered.length;
-
-            if (filtered.length === 0) {
-                grid.innerHTML = '<div class="no-results"><i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i><br>Товары не найдены</div>';
-                return;
-            }
-
-            grid.innerHTML = filtered.map(p => `
-                <div class="product-card" data-category="${p.category}">
-                    <div class="product-img">
-                        ${p.image 
-                            ? `<img src="${p.image}" alt="${p.name}" loading="lazy">`
-                            : `<i class="fas ${getIcon(p.category)}"></i>`
-                        }
-                    </div>
+        function render() {
+            let f = products.filter(p => (curCat === 'all' || p.category === curCat) && (!sQ || p.name.toLowerCase().includes(sQ.toLowerCase())));
+            cnt.textContent = f.length;
+            if (!f.length) { grid.innerHTML = '<div class="no-results"><i class="fas fa-search"></i><br>Товары не найдены</div>'; return; }
+            grid.innerHTML = f.map(p => `
+                <div class="product-card">
+                    <div class="product-img">${p.image ? `<img src="${p.image}" alt="${p.name}">` : `<i class="fas ${getIcon(p.category)}"></i>`}</div>
                     <div class="product-category">${p.subcategory}</div>
                     <div class="product-title">${p.name}</div>
                     <div class="product-desc">${p.desc}</div>
-                    <div class="product-footer">
-                        <div class="product-price">${formatPrice(p.price)} ₽ <small>/${p.unit}</small></div>
-                        <button class="cart-btn" data-product-id="${p.id}"><i class="fas fa-plus"></i></button>
-                    </div>
+                    <div class="product-price">${formatPrice(p.price)} ₽ <small>/${p.unit}</small></div>
                 </div>
             `).join('');
-
-            document.querySelectorAll('.cart-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const productId = parseInt(this.dataset.productId);
-                    
-                    if (addToCart(productId)) {
-                        const originalIcon = this.innerHTML;
-                        this.innerHTML = '<i class="fas fa-check"></i>';
-                        this.style.background = '#22c55e';
-                        this.style.color = 'white';
-                        setTimeout(() => {
-                            this.innerHTML = originalIcon;
-                            this.style.background = '';
-                            this.style.color = '';
-                        }, 500);
-                    }
-                });
-            });
         }
 
-        // ===== ПЕРЕКЛЮЧЕНИЕ КАТЕГОРИЙ =====
-        const categoryTabs = document.querySelectorAll('.category-tab');
-        categoryTabs.forEach(tab => {
-            tab.addEventListener('click', function() {
-                categoryTabs.forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-                currentCategory = this.dataset.category;
-                renderProducts();
-            });
-        });
+        document.querySelectorAll('.category-tab').forEach(t => t.addEventListener('click', function() {
+            document.querySelectorAll('.category-tab').forEach(x => x.classList.remove('active'));
+            this.classList.add('active');
+            curCat = this.dataset.category;
+            render();
+        }));
 
-        // ===== ПОИСК =====
-        function performSearch() {
-            searchQuery = searchInput.value.trim();
-            renderProducts();
-        }
+        document.getElementById('searchBtn').addEventListener('click', () => { sQ = sInp.value.trim().toLowerCase(); render(); });
+        sInp.addEventListener('keyup', e => { if (e.key === 'Enter') { sQ = sInp.value.trim().toLowerCase(); render(); } });
 
-        searchBtn.addEventListener('click', performSearch);
-        searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') performSearch(); });
-
-        // ===== МОДАЛЬНОЕ ОКНО КОРЗИНЫ =====
-        const modal = document.getElementById('cartModal');
-        const cartIcon = document.getElementById('cartIcon');
-        const closeBtn = document.getElementById('closeCartModal');
-        const clearCartBtn = document.getElementById('clearCartBtn');
-        const checkoutBtn = document.getElementById('checkoutBtn');
-
-        cartIcon.addEventListener('click', (e) => {
-            e.preventDefault();
-            modal.classList.add('active');
-        });
-
-        closeBtn.addEventListener('click', () => modal.classList.remove('active'));
-        modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
-
-        clearCartBtn.addEventListener('click', () => { if (confirm('Очистить корзину?')) clearCart(); });
-        checkoutBtn.addEventListener('click', () => {
-            alert('Спасибо за заказ! Наш менеджер свяжется с вами в ближайшее время.');
-            clearCart();
-            modal.classList.remove('active');
-        });
-
-        // ===== ПЕРЕКЛЮЧЕНИЕ ТЕМЫ (ТЁМНАЯ ПО УМОЛЧАНИЮ) =====
-        const themeToggle = document.getElementById('themeToggle');
-        const htmlElement = document.documentElement;
-        
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            htmlElement.setAttribute('data-theme', savedTheme);
-        } else {
-            htmlElement.setAttribute('data-theme', 'dark');
-        }
-        
-        themeToggle.addEventListener('click', function() {
-            const currentTheme = htmlElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            htmlElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-        });
-
-        // ===== ИНИЦИАЛИЗАЦИЯ =====
-        renderProducts();
-        updateCartUI();
+        render();
     })();
 </script>
 
