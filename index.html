@@ -124,10 +124,6 @@
             box-shadow: 0 10px 20px rgba(34, 197, 94, 0.3);
         }
 
-        .phone-header i {
-            font-size: 18px;
-        }
-
         /* ===== ПОИСК ===== */
         .search-section {
             padding: 30px 0 10px;
@@ -247,25 +243,97 @@
             box-shadow: 0 10px 25px rgba(34, 197, 94, 0.4);
         }
 
-        .btn-outline {
-            background: transparent;
-            color: var(--btn-outline-text);
-            box-shadow: none;
-            border: 1.5px solid var(--btn-outline-border);
-        }
-
-        .hero-image {
-            background: var(--hero-image-gradient);
+        /* ===== СЛАЙДЕР ===== */
+        .hero-slider {
+            position: relative;
             border-radius: 40px;
-            padding: 20px;
+            overflow: hidden;
             box-shadow: 20px 20px 40px rgba(0,0,0,0.3), -10px -10px 30px rgba(30, 41, 59, 0.5);
+            aspect-ratio: 4 / 3;
         }
 
-        .hero-image img {
+        .slider-container {
+            position: relative;
             width: 100%;
-            height: auto;
-            border-radius: 24px;
-            display: block;
+            height: 100%;
+        }
+
+        .slider-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .slider-slide.active {
+            opacity: 1;
+        }
+
+        .slider-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .slider-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .slider-dot.active {
+            background: white;
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        .slider-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .slider-arrow:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .slider-arrow-left {
+            left: 20px;
+        }
+
+        .slider-arrow-right {
+            right: 20px;
         }
 
         /* ===== КАТЕГОРИИ ===== */
@@ -563,6 +631,10 @@
             .phone-header {
                 padding: 10px 15px;
             }
+
+            .hero-slider {
+                aspect-ratio: 1 / 1;
+            }
         }
     </style>
 </head>
@@ -609,8 +681,29 @@
                     </a>
                 </div>
             </div>
-            <div class="hero-image">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Crect width='400' height='300' fill='%231e293b'/%3E%3Cpath d='M0 200 L400 100 L400 300 L0 300 Z' fill='%23334155'/%3E%3Crect x='50' y='50' width='120' height='120' fill='%233b82f6' rx='20'/%3E%3Ccircle cx='250' cy='140' r='50' fill='%23a78bfa'/%3E%3Crect x='280' y='50' width='80' height='120' fill='%23f8fafc' rx='10'/%3E%3C/svg%3E" alt="Стройматериалы">
+            <div class="hero-slider" id="heroSlider">
+                <div class="slider-container" id="sliderContainer">
+                    <!-- Фото 1 -->
+                    <div class="slider-slide active">
+                        <img src="https://i.ibb.co/sv5QvPc2/XXXL-1.webp" alt="Стройматериалы">
+                    </div>
+                    <!-- Фото 2 -->
+                    <div class="slider-slide">
+                        <img src="https://i.ibb.co/dJ5pDFw6/XXXL-2.webp" alt="Кирпич и блоки">
+                    </div>
+                    <!-- Фото 3 -->
+                    <div class="slider-slide">
+                        <img src="https://i.ibb.co/zVQ4PFBc/XXXL-3.webp" alt="Пиломатериалы">
+                    </div>
+                    <!-- Фото 4 -->
+                    <div class="slider-slide">
+                        <img src="https://i.ibb.co/YFXX7Fth/XXXL.webp" alt="Кольца ЖБИ">
+                    </div>
+                <!-- Точки -->
+                <div class="slider-dots" id="sliderDots"></div>
+                <!-- Стрелки -->
+                <button class="slider-arrow slider-arrow-left" id="prevSlide"><i class="fas fa-chevron-left"></i></button>
+                <button class="slider-arrow slider-arrow-right" id="nextSlide"><i class="fas fa-chevron-right"></i></button>
             </div>
         </section>
 
@@ -634,9 +727,9 @@
         <div class="cta-banner">
             <h2>Нужна консультация или расчёт?</h2>
             <p>Позвоните нам прямо сейчас — поможем подобрать материалы и рассчитаем стоимость!</p>
-            <a href="tel:+79991234567" class="cta-phone">
+            <a href="tel:+79375111244" class="cta-phone">
                 <i class="fas fa-phone-alt"></i>
-                +7 (999) 123-45-67
+                +7 (937) 511-12-44
             </a>
         </div>
 
@@ -647,13 +740,13 @@
                 <div class="contact-card">
                     <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
                     <h3>Телефон</h3>
-                    <a href="tel:+79991234567">+7 (999) 123-45-67</a>
+                    <a href="tel:+79375111244">+7 (937) 511-12-44</a>
                     <p style="font-size: 14px; margin-top: 8px;">Ежедневно с 8:00 до 20:00</p>
                 </div>
                 <div class="contact-card">
                     <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
                     <h3>Адрес</h3>
-                    <p>г. Москва, ул. Строителей, 15</p>
+                    <p>г. Рузаевка, ул. Строительная, 2а</p>
                     <p style="font-size: 14px; margin-top: 8px;">Самовывоз и доставка</p>
                 </div>
             </div>
@@ -665,12 +758,12 @@
     <div class="container">
         <div class="footer-content">
             <div class="footer-copyright">
-                © 2026 СТРОЙ. Все права защищены.
+                © 2026 СТРОЙ БАЗА. Все права защищены.
             </div>
             <div class="footer-links">
                 <a href="#">Политика</a>
                 <a href="#">Доставка</a>
-                <a href="tel:+79991234567"><i class="fas fa-phone-alt"></i> Позвонить</a>
+                <a href="tel:+79375111244"><i class="fas fa-phone-alt"></i> Позвонить</a>
             </div>
         </div>
     </div>
@@ -678,7 +771,72 @@
 
 <script>
     (function() {
-        // Полная база товаров
+        // ===== СЛАЙДЕР =====
+        const slides = document.querySelectorAll('.slider-slide');
+        const dotsContainer = document.getElementById('sliderDots');
+        const prevBtn = document.getElementById('prevSlide');
+        const nextBtn = document.getElementById('nextSlide');
+        let currentSlide = 0;
+        let slideInterval;
+
+        // Создаём точки
+        slides.forEach((_, i) => {
+            const dot = document.createElement('button');
+            dot.classList.add('slider-dot');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(i));
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.slider-dot');
+
+        function goToSlide(index) {
+            slides.forEach(s => s.classList.remove('active'));
+            dots.forEach(d => d.classList.remove('active'));
+            
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            const next = (currentSlide + 1) % slides.length;
+            goToSlide(next);
+        }
+
+        function prevSlide() {
+            const prev = (currentSlide - 1 + slides.length) % slides.length;
+            goToSlide(prev);
+        }
+
+        function startAutoSlide() {
+            slideInterval = setInterval(nextSlide, 4000); // Смена каждые 4 секунды
+        }
+
+        function stopAutoSlide() {
+            clearInterval(slideInterval);
+        }
+
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            stopAutoSlide();
+            startAutoSlide();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            stopAutoSlide();
+            startAutoSlide();
+        });
+
+        // Останавливаем автопрокрутку при наведении
+        const slider = document.getElementById('heroSlider');
+        slider.addEventListener('mouseenter', stopAutoSlide);
+        slider.addEventListener('mouseleave', startAutoSlide);
+
+        startAutoSlide();
+
+        // ===== КАТАЛОГ =====
         const products = [
             // Цемент и смеси (7)
             { id: 1, name: "Цемент 50кг", category: "cement", subcategory: "Цемент", price: 550, unit: "шт", desc: "Портландцемент М500, 50 кг", image: "" },
