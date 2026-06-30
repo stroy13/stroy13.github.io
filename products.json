@@ -668,5 +668,15 @@
     "unit": "шт",
     "desc": "",
     "image": ""
+  },
+  {
+    "id": 1782817366933,
+    "name": "Утеплитель",
+    "category": "utepliteli",
+    "subcategory": "Утеплители",
+    "price": 850,
+    "unit": "Пачка",
+    "desc": "",
+    "image": ""
   }
 ]
