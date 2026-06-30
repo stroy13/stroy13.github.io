@@ -62,7 +62,7 @@
         .settings-bar input:focus { border-color: #3b82f6; }
         .settings-bar small { color: #94a3b8; display: block; margin-top: 6px; }
         
-        .icon-option:hover { border-color: #3b82f6 !important; transform: scale(1.1); }
+        .icon-option:hover { transform: scale(1.15); }
     </style>
 </head>
 <body>
@@ -81,13 +81,11 @@
         <small>GitHub → Settings → Developer settings → Tokens (classic) → repo</small>
     </div>
     
-    <!-- Табы -->
     <div class="tabs">
         <button class="tab active" data-tab="products">📦 Товары</button>
         <button class="tab" data-tab="categories">📂 Категории</button>
     </div>
     
-    <!-- Товары -->
     <div class="tab-content active" id="tab-products">
         <div class="toolbar">
             <button class="add-btn" id="addProductBtn">+ Добавить товар</button>
@@ -100,20 +98,18 @@
         <p style="text-align: center; margin-top: 16px; color: #94a3b8;" id="productCount"></p>
     </div>
     
-    <!-- Категории -->
     <div class="tab-content" id="tab-categories">
         <div class="toolbar">
             <button class="add-btn" id="addCategoryBtn">+ Добавить категорию</button>
         </div>
         <table>
-            <thead><tr><th>Название</th><th>ID (для кода)</th><th>Иконка</th><th>Товаров</th><th>Действия</th></tr></thead>
+            <thead><tr><th>Название</th><th>ID</th><th>Иконка</th><th>Товаров</th><th>Действия</th></tr></thead>
             <tbody id="categoriesTable"></tbody>
         </table>
         <p style="text-align: center; margin-top: 16px; color: #94a3b8;" id="categoryCount"></p>
     </div>
 </div>
 
-<!-- Модальное окно товара -->
 <div class="modal-overlay" id="productModal">
     <div class="modal">
         <h2 id="productModalTitle">Новый товар</h2>
@@ -134,7 +130,6 @@
     </div>
 </div>
 
-<!-- Модальное окно категории -->
 <div class="modal-overlay" id="categoryModal">
     <div class="modal" style="max-width: 600px;">
         <h2 id="categoryModalTitle">Новая категория</h2>
@@ -163,31 +158,24 @@
     var categories = [];
     var editMode = 'new';
     
-    // ===== ЗАГРУЗКА ДАННЫХ =====
     async function loadData() {
         try {
             var pr = await fetch('https://stroy13.github.io/products.json');
             if (pr.ok) products = await pr.json();
-            else showMessage('❌ Не удалось загрузить товары', 'error');
-        } catch(e) { showMessage('❌ Ошибка загрузки товаров', 'error'); }
-        
+        } catch(e) {}
         try {
             var cr = await fetch('https://stroy13.github.io/categories.json');
             if (cr.ok) categories = await cr.json();
-            else showMessage('❌ Не удалось загрузить категории', 'error');
-        } catch(e) { showMessage('❌ Ошибка загрузки категорий', 'error'); }
-        
+        } catch(e) {}
         renderProducts();
         renderCategories();
     }
     
-    // ===== ТОВАРЫ =====
     function renderProducts() {
         var tbody = document.getElementById('productsTable');
         var search = document.getElementById('searchProducts').value.toLowerCase();
         var filtered = products.filter(function(p) { return p.name && p.name.toLowerCase().indexOf(search) !== -1; });
         document.getElementById('productCount').textContent = 'Показано: ' + filtered.length + ' из ' + products.length;
-        
         var html = '';
         for (var i = 0; i < filtered.length; i++) {
             var p = filtered[i];
@@ -202,17 +190,13 @@
             html += '</tr>';
         }
         tbody.innerHTML = html;
-        bindProductButtons();
-    }
-    
-    function bindProductButtons() {
         var editBtns = document.querySelectorAll('[data-edit-product]');
-        for (var i = 0; i < editBtns.length; i++) {
-            editBtns[i].onclick = function() { openProductModal('edit', parseInt(this.getAttribute('data-edit-product'))); };
+        for (var j = 0; j < editBtns.length; j++) {
+            editBtns[j].onclick = function() { openProductModal('edit', parseInt(this.getAttribute('data-edit-product'))); };
         }
         var delBtns = document.querySelectorAll('[data-del-product]');
-        for (var j = 0; j < delBtns.length; j++) {
-            delBtns[j].onclick = function() { deleteProduct(parseInt(this.getAttribute('data-del-product'))); };
+        for (var k = 0; k < delBtns.length; k++) {
+            delBtns[k].onclick = function() { deleteProduct(parseInt(this.getAttribute('data-del-product'))); };
         }
     }
     
@@ -223,7 +207,6 @@
         for (var i = 0; i < categories.length; i++) {
             sel.innerHTML += '<option value="' + categories[i].id + '">' + categories[i].name + '</option>';
         }
-        
         if (mode === 'new') {
             document.getElementById('productModalTitle').textContent = 'Новый товар';
             document.getElementById('productId').value = '';
@@ -256,8 +239,7 @@
         e.preventDefault();
         var id = document.getElementById('productId').value ? parseInt(document.getElementById('productId').value) : Date.now();
         var product = {
-            id: id,
-            name: document.getElementById('productName').value.trim(),
+            id: id, name: document.getElementById('productName').value.trim(),
             category: document.getElementById('productCategory').value,
             subcategory: document.getElementById('productSubcategory').value.trim(),
             price: parseInt(document.getElementById('productPrice').value) || 0,
@@ -267,8 +249,7 @@
         };
         if (editMode === 'new') products.push(product);
         else { var idx = products.findIndex(function(x) { return x.id === id; }); if (idx !== -1) products[idx] = product; }
-        closeProductModal();
-        renderProducts();
+        closeProductModal(); renderProducts();
         showMessage('✅ Товар сохранён локально. Нажмите «Сохранить всё на сайт».', 'success');
     };
     
@@ -279,7 +260,6 @@
         showMessage('🗑️ Товар удалён локально.', 'success');
     }
     
-    // ===== КАТЕГОРИИ =====
     var iconList = [
         'fa-cube', 'fa-cubes', 'fa-box', 'fa-boxes', 'fa-warehouse',
         'fa-circle', 'fa-draw-polygon', 'fa-shapes', 'fa-th-large',
@@ -294,6 +274,7 @@
         'fa-truck', 'fa-shipping-fast', 'fa-dolly', 'fa-pallet',
         'fa-star', 'fa-tag', 'fa-tags', 'fa-check-circle'
     ];
+    var iconColors = ['#3b82f6', '#22c55e', '#f59e0b', '#ef4444', '#a78bfa', '#ec4899', '#06b6d4', '#f97316', '#8b5cf6', '#14b8a6'];
 
     function renderIconPicker(selectedIcon) {
         var picker = document.getElementById('iconPicker');
@@ -301,11 +282,11 @@
         for (var i = 0; i < iconList.length; i++) {
             var ic = iconList[i];
             var isSelected = (ic === selectedIcon);
-            html += '<button type="button" class="icon-option" data-icon="' + ic + '" style="background: #1e293b; border: 2px solid ' + (isSelected ? '#3b82f6' : '#334155') + '; border-radius: 10px; padding: 10px; cursor: pointer; color: #f1f5f9; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"><i class="fas ' + ic + '"></i></button>';
+            var color = iconColors[i % iconColors.length];
+            html += '<button type="button" class="icon-option" data-icon="' + ic + '" style="background: #1e293b; border: 2px solid ' + (isSelected ? color : '#334155') + '; border-radius: 10px; padding: 10px; cursor: pointer; color: ' + color + '; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"><i class="fas ' + ic + '"></i></button>';
         }
         picker.innerHTML = html;
         document.getElementById('selectedIconName').textContent = selectedIcon;
-        
         var btns = picker.querySelectorAll('.icon-option');
         for (var j = 0; j < btns.length; j++) {
             btns[j].onclick = function() {
@@ -332,17 +313,13 @@
             html += '</tr>';
         }
         tbody.innerHTML = html;
-        bindCategoryButtons();
-    }
-    
-    function bindCategoryButtons() {
         var editBtns = document.querySelectorAll('[data-edit-cat]');
-        for (var i = 0; i < editBtns.length; i++) {
-            editBtns[i].onclick = function() { openCategoryModal('edit', this.getAttribute('data-edit-cat')); };
+        for (var j = 0; j < editBtns.length; j++) {
+            editBtns[j].onclick = function() { openCategoryModal('edit', this.getAttribute('data-edit-cat')); };
         }
         var delBtns = document.querySelectorAll('[data-del-cat]');
-        for (var j = 0; j < delBtns.length; j++) {
-            delBtns[j].onclick = function() { deleteCategory(this.getAttribute('data-del-cat')); };
+        for (var k = 0; k < delBtns.length; k++) {
+            delBtns[k].onclick = function() { deleteCategory(this.getAttribute('data-del-cat')); };
         }
     }
     
@@ -387,22 +364,17 @@
                 }
                 renderProducts();
             }
-        } else {
-            categories.push(newCat);
-        }
-        closeCategoryModal();
-        renderCategories();
-        showMessage('✅ Категория сохранена локально. Нажмите «Сохранить всё на сайт».', 'success');
+        } else { categories.push(newCat); }
+        closeCategoryModal(); renderCategories();
+        showMessage('✅ Категория сохранена локально.', 'success');
     };
     
     function deleteCategory(id) {
-        if (!confirm('Удалить категорию? Товары этой категории останутся, но потеряют привязку.')) return;
+        if (!confirm('Удалить категорию?')) return;
         categories = categories.filter(function(c) { return c.id !== id; });
         renderCategories();
-        showMessage('🗑️ Категория удалена локально.', 'success');
     }
     
-    // ===== СОХРАНЕНИЕ НА GITHUB =====
     async function saveToGitHub(filename, data) {
         var token = document.getElementById('githubToken').value.trim();
         if (!token) { showMessage('❌ Введите GitHub Token!', 'error'); return false; }
@@ -425,8 +397,8 @@
     async function saveAll() {
         var ok1 = await saveToGitHub('products.json', products);
         var ok2 = await saveToGitHub('categories.json', categories);
-        if (ok1 && ok2) showMessage('✅ Всё сохранено на сайт! Через 1-2 минуты изменения появятся.', 'success');
-        else showMessage('❌ Ошибка сохранения. Проверьте токен.', 'error');
+        if (ok1 && ok2) showMessage('✅ Всё сохранено на сайт!', 'success');
+        else showMessage('❌ Ошибка сохранения.', 'error');
     }
     
     function showMessage(text, type) {
@@ -434,7 +406,6 @@
         setTimeout(function() { document.getElementById('messageContainer').innerHTML = ''; }, 5000);
     }
     
-    // ===== ПРИВЯЗКА СОБЫТИЙ =====
     document.getElementById('saveAllBtn').onclick = saveAll;
     document.getElementById('addProductBtn').onclick = function() { openProductModal('new'); };
     document.getElementById('addCategoryBtn').onclick = function() { openCategoryModal('new'); };
@@ -442,7 +413,6 @@
     document.getElementById('cancelCategoryBtn').onclick = closeCategoryModal;
     document.getElementById('searchProducts').oninput = renderProducts;
     
-    // Табы
     document.querySelectorAll('.tab').forEach(function(tab) {
         tab.onclick = function() {
             document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
@@ -452,7 +422,6 @@
         };
     });
     
-    // Закрытие модалок
     document.getElementById('productModal').onclick = function(e) { if (e.target === this) closeProductModal(); };
     document.getElementById('categoryModal').onclick = function(e) { if (e.target === this) closeCategoryModal(); };
     document.onkeydown = function(e) { if (e.key === 'Escape') { closeProductModal(); closeCategoryModal(); } };
