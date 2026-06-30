@@ -7,36 +7,29 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f1f5f9; min-height: 100vh; }
-        
         .topbar { background: #1e293b; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
         .topbar h1 { font-size: 20px; color: #f8fafc; }
         .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
-        
-        .message { padding: 16px 24px; margin: 0; font-weight: 600; text-align: center; border-radius: 12px; }
-        .message.success { background: #065f46; color: #6ee7b7; margin-bottom: 20px; }
-        .message.error { background: #7f1d1d; color: #fca5a5; margin-bottom: 20px; }
-        
+        .message { padding: 16px 24px; margin: 0 0 20px 0; font-weight: 600; text-align: center; border-radius: 12px; }
+        .message.success { background: #065f46; color: #6ee7b7; }
+        .message.error { background: #7f1d1d; color: #fca5a5; }
         .add-btn { background: #22c55e; color: white; border: none; padding: 14px 28px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 20px; }
         .add-btn:hover { background: #16a34a; }
-        
         .toolbar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
         .search-input { padding: 12px 16px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: #f1f5f9; font-size: 14px; width: 300px; outline: none; }
         .search-input:focus { border-color: #3b82f6; }
         .save-all-btn { background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
         .save-all-btn:hover { background: #2563eb; }
-        
         table { width: 100%; border-collapse: collapse; background: #1e293b; border-radius: 16px; overflow: hidden; }
         th { background: #334155; padding: 12px 16px; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; }
         td { padding: 12px 16px; border-bottom: 1px solid #334155; font-size: 14px; }
         tr:hover td { background: #1e3a5f; }
-        
         .actions { display: flex; gap: 8px; }
         .edit-btn, .del-btn { padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; border: none; color: white; }
         .edit-btn { background: #3b82f6; }
         .edit-btn:hover { background: #2563eb; }
         .del-btn { background: #ef4444; }
         .del-btn:hover { background: #dc2626; }
-        
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
         .modal-overlay.active { display: flex; }
         .modal { background: #1e293b; border-radius: 24px; padding: 30px; width: 500px; max-width: 90vw; max-height: 85vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
@@ -51,7 +44,6 @@
         .save-btn:hover { background: #16a34a; }
         .cancel-btn { background: #475569; color: white; }
         .cancel-btn:hover { background: #334155; }
-        
         .settings-bar { background: #1e3a5f; padding: 16px; border-radius: 12px; margin-bottom: 20px; }
         .settings-bar label { color: #93c5fd; font-size: 13px; display: block; margin-bottom: 6px; }
         .settings-bar input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #f1f5f9; font-size: 13px; outline: none; }
@@ -63,7 +55,7 @@
 
 <div class="topbar">
     <h1>🔨 СТРОЙ БАЗА — Управление товарами</h1>
-    <button class="save-all-btn" onclick="saveAll()">💾 Сохранить все изменения</button>
+    <button class="save-all-btn" id="saveAllBtn">💾 Сохранить все изменения</button>
 </div>
 
 <div class="container">
@@ -76,8 +68,8 @@
     </div>
     
     <div class="toolbar">
-        <button class="add-btn" onclick="openModal('new')">+ Добавить товар</button>
-        <input type="text" class="search-input" id="searchInput" placeholder="🔍 Поиск по товарам..." oninput="render()">
+        <button class="add-btn" id="addBtn">+ Добавить товар</button>
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 Поиск по товарам...">
     </div>
     
     <table>
@@ -99,7 +91,7 @@
 <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
         <h2 id="modalTitle">Новый товар</h2>
-        <form id="productForm" onsubmit="saveProduct(event)">
+        <form id="productForm">
             <input type="hidden" id="productId">
             
             <label>Название товара *</label>
@@ -131,7 +123,7 @@
             <input type="text" id="productImage" placeholder="https://...">
             
             <div class="modal-buttons">
-                <button type="button" class="cancel-btn" onclick="closeModal()">Отмена</button>
+                <button type="button" class="cancel-btn" id="cancelBtn">Отмена</button>
                 <button type="submit" class="save-btn">💾 Сохранить</button>
             </div>
         </form>
@@ -139,42 +131,63 @@
 </div>
 
 <script>
-    let products = [];
-    let editMode = 'new';
+(function() {
+    var products = [];
+    var editMode = 'new';
     
     // Загружаем товары
     async function loadProducts() {
         try {
-            const response = await fetch('https://stroy13.github.io/products.json');
+            var response = await fetch('https://stroy13.github.io/products.json');
             if (!response.ok) throw new Error('Файл не найден');
             products = await response.json();
             showMessage('✅ Загружено ' + products.length + ' товаров', 'success');
         } catch (e) {
-            showMessage('❌ Не удалось загрузить файл products.json. Проверьте, что файл существует в корне сайта.', 'error');
+            showMessage('❌ Не удалось загрузить products.json', 'error');
             console.error(e);
         }
         render();
     }
     
     function render() {
-        const tbody = document.getElementById('productsTable');
-        const search = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = products.filter(p => p.name && p.name.toLowerCase().includes(search));
+        var tbody = document.getElementById('productsTable');
+        var search = document.getElementById('searchInput').value.toLowerCase();
+        var filtered = products.filter(function(p) {
+            return p.name && p.name.toLowerCase().indexOf(search) !== -1;
+        });
         
         document.getElementById('productCount').textContent = 'Показано: ' + filtered.length + ' из ' + products.length + ' товаров';
         
-        tbody.innerHTML = filtered.map(function(p) {
-            return '<tr>' +
-                '<td>' + (p.image ? '<img src="' + p.image + '" alt="" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;">' : '📦') + '</td>' +
-                '<td>' + (p.name || '') + '</td>' +
-                '<td>' + getCategoryName(p.category) + '</td>' +
-                '<td>' + (p.price ? p.price.toLocaleString() : '0') + ' ₽ / ' + (p.unit || 'шт') + '</td>' +
-                '<td class="actions">' +
-                    '<button class="edit-btn" onclick="openModal(\'edit\', ' + p.id + ')">✏️</button>' +
-                    '<button class="del-btn" onclick="deleteProduct(' + p.id + ')">🗑️</button>' +
-                '</td>' +
-            '</tr>';
-        }).join('');
+        var html = '';
+        for (var i = 0; i < filtered.length; i++) {
+            var p = filtered[i];
+            html += '<tr>';
+            html += '<td>' + (p.image ? '<img src="' + p.image + '" alt="" style="width:40px;height:40px;object-fit:cover;border-radius:8px;">' : '📦') + '</td>';
+            html += '<td>' + (p.name || '') + '</td>';
+            html += '<td>' + getCategoryName(p.category) + '</td>';
+            html += '<td>' + (p.price ? p.price.toLocaleString() : '0') + ' ₽ / ' + (p.unit || 'шт') + '</td>';
+            html += '<td class="actions">';
+            html += '<button class="edit-btn" data-id="' + p.id + '">✏️</button> ';
+            html += '<button class="del-btn" data-id="' + p.id + '">🗑️</button>';
+            html += '</td>';
+            html += '</tr>';
+        }
+        tbody.innerHTML = html;
+        
+        // Привязываем кнопки
+        var editBtns = document.querySelectorAll('.edit-btn');
+        for (var j = 0; j < editBtns.length; j++) {
+            editBtns[j].onclick = function() {
+                openModal('edit', parseInt(this.getAttribute('data-id')));
+            };
+        }
+        
+        var delBtns = document.querySelectorAll('.del-btn');
+        for (var k = 0; k < delBtns.length; k++) {
+            delBtns[k].onclick = function() {
+                deleteProduct(parseInt(this.getAttribute('data-id')));
+            };
+        }
     }
     
     function getCategoryName(cat) {
@@ -242,14 +255,14 @@
         
         closeModal();
         render();
-        showMessage('✅ Товар сохранён локально. Нажмите «Сохранить все изменения» чтобы записать на сайт.', 'success');
+        showMessage('✅ Товар сохранён локально. Нажмите «Сохранить все изменения».', 'success');
     }
     
     function deleteProduct(id) {
         if (!confirm('Удалить этот товар?')) return;
         products = products.filter(function(p) { return p.id !== id; });
         render();
-        showMessage('🗑️ Товар удалён локально. Нажмите «Сохранить все изменения» чтобы записать на сайт.', 'success');
+        showMessage('🗑️ Товар удалён локально. Нажмите «Сохранить все изменения».', 'success');
     }
     
     async function saveAll() {
@@ -260,14 +273,12 @@
         }
         
         try {
-            // Получаем текущий SHA файла
             var getResponse = await fetch('https://api.github.com/repos/stroy13/stroy13.github.io/contents/products.json', {
                 headers: { 'Authorization': 'token ' + token }
             });
             var getData = await getResponse.json();
             var sha = getData.sha;
             
-            // Сохраняем обновлённый JSON
             var content = btoa(unescape(encodeURIComponent(JSON.stringify(products, null, 2))));
             var putResponse = await fetch('https://api.github.com/repos/stroy13/stroy13.github.io/contents/products.json', {
                 method: 'PUT',
@@ -283,19 +294,16 @@
             });
             
             if (putResponse.ok) {
-                showMessage('✅ Все изменения сохранены на сайт! Через 1-2 минуты они появятся.', 'success');
+                showMessage('✅ Изменения сохранены на сайт!', 'success');
             } else {
                 var errData = await putResponse.json();
-                showMessage('❌ Ошибка сохранения: ' + (errData.message || 'Проверьте токен'), 'error');
+                showMessage('❌ Ошибка: ' + (errData.message || 'Проверьте токен'), 'error');
             }
         } catch (e) {
-            showMessage('❌ Ошибка соединения с GitHub. Проверьте токен.', 'error');
+            showMessage('❌ Ошибка соединения с GitHub.', 'error');
             console.error(e);
         }
     }
-    
-    // Делаем saveAll глобальной
-    window.saveAll = saveAll;
     
     function showMessage(text, type) {
         document.getElementById('messageContainer').innerHTML = '<div class="message ' + type + '">' + text + '</div>';
@@ -304,15 +312,21 @@
         }, 5000);
     }
     
-    document.getElementById('modalOverlay').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
-    
-    document.addEventListener('keydown', function(e) {
+    // Привязываем события
+    document.getElementById('saveAllBtn').onclick = saveAll;
+    document.getElementById('addBtn').onclick = function() { openModal('new'); };
+    document.getElementById('searchInput').oninput = render;
+    document.getElementById('cancelBtn').onclick = closeModal;
+    document.getElementById('productForm').onsubmit = saveProduct;
+    document.getElementById('modalOverlay').onclick = function(e) {
+        if (e.target === document.getElementById('modalOverlay')) closeModal();
+    };
+    document.onkeydown = function(e) {
         if (e.key === 'Escape') closeModal();
-    });
+    };
     
     loadProducts();
+})();
 </script>
 </body>
 </html>
