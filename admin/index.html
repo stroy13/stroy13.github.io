@@ -426,6 +426,16 @@
     document.getElementById('categoryModal').onclick = function(e) { if (e.target === this) closeCategoryModal(); };
     document.onkeydown = function(e) { if (e.key === 'Escape') { closeProductModal(); closeCategoryModal(); } };
     
+    // Сохранение токена в localStorage
+    var tokenInput = document.getElementById('githubToken');
+    var savedToken = localStorage.getItem('github_token');
+    if (savedToken) {
+        tokenInput.value = savedToken;
+    }
+    tokenInput.addEventListener('input', function() {
+        localStorage.setItem('github_token', this.value);
+    });
+    
     loadData();
 })();
 </script>
