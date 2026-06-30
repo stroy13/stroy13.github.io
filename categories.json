@@ -1,0 +1,32 @@
+[
+  {
+    "id": "cement",
+    "name": "Цемент и смеси",
+    "icon": "fa-cube"
+  },
+  {
+    "id": "rings",
+    "name": "Кольца ЖБИ",
+    "icon": "fa-circle"
+  },
+  {
+    "id": "tiles",
+    "name": "Плитка и брусчатка",
+    "icon": "fa-border-all"
+  },
+  {
+    "id": "bricks",
+    "name": "Кирпич и блоки",
+    "icon": "fa-cubes"
+  },
+  {
+    "id": "wood",
+    "name": "Пиломатериалы",
+    "icon": "fa-tree"
+  },
+  {
+    "id": "pipes",
+    "name": "Трубы и комплектующие",
+    "icon": "fa-grip-lines"
+  }
+]
