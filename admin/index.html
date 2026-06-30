@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель | СТРОЙ БАЗА</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f1f5f9; min-height: 100vh; }
+        
+        .topbar { background: #1e293b; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
+        .topbar h1 { font-size: 20px; color: #f8fafc; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        
+        .message { padding: 16px 24px; margin: 0; font-weight: 600; text-align: center; border-radius: 12px; }
+        .message.success { background: #065f46; color: #6ee7b7; margin-bottom: 20px; }
+        .message.error { background: #7f1d1d; color: #fca5a5; margin-bottom: 20px; }
+        
+        .add-btn { background: #22c55e; color: white; border: none; padding: 14px 28px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 20px; }
+        .add-btn:hover { background: #16a34a; }
+        
+        .toolbar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+        .search-input { padding: 12px 16px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: #f1f5f9; font-size: 14px; width: 300px; outline: none; }
+        .search-input:focus { border-color: #3b82f6; }
+        .save-all-btn { background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .save-all-btn:hover { background: #2563eb; }
+        
+        table { width: 100%; border-collapse: collapse; background: #1e293b; border-radius: 16px; overflow: hidden; }
+        th { background: #334155; padding: 12px 16px; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; }
+        td { padding: 12px 16px; border-bottom: 1px solid #334155; font-size: 14px; }
+        tr:hover td { background: #1e3a5f; }
+        
+        .actions { display: flex; gap: 8px; }
+        .edit-btn, .del-btn { padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; border: none; color: white; }
+        .edit-btn { background: #3b82f6; }
+        .edit-btn:hover { background: #2563eb; }
+        .del-btn { background: #ef4444; }
+        .del-btn:hover { background: #dc2626; }
+        
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+        .modal-overlay.active { display: flex; }
+        .modal { background: #1e293b; border-radius: 24px; padding: 30px; width: 500px; max-width: 90vw; max-height: 85vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        .modal h2 { margin-bottom: 20px; color: #f8fafc; font-size: 22px; }
+        .modal label { display: block; margin-bottom: 6px; color: #94a3b8; font-size: 13px; font-weight: 600; margin-top: 16px; }
+        .modal input, .modal textarea, .modal select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: #f1f5f9; font-size: 14px; margin-top: 4px; font-family: inherit; outline: none; }
+        .modal input:focus, .modal textarea:focus, .modal select:focus { border-color: #3b82f6; }
+        .modal textarea { min-height: 80px; resize: vertical; }
+        .modal-buttons { display: flex; gap: 12px; margin-top: 24px; }
+        .modal-buttons button { flex: 1; padding: 14px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; }
+        .save-btn { background: #22c55e; color: white; }
+        .save-btn:hover { background: #16a34a; }
+        .cancel-btn { background: #475569; color: white; }
+        .cancel-btn:hover { background: #334155; }
+        
+        .settings-bar { background: #1e3a5f; padding: 16px; border-radius: 12px; margin-bottom: 20px; }
+        .settings-bar label { color: #93c5fd; font-size: 13px; display: block; margin-bottom: 6px; }
+        .settings-bar input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #f1f5f9; font-size: 13px; outline: none; }
+        .settings-bar input:focus { border-color: #3b82f6; }
+        .settings-bar small { color: #94a3b8; display: block; margin-top: 6px; }
+    </style>
+</head>
+<body>
+
+<div class="topbar">
+    <h1>🔨 СТРОЙ БАЗА — Управление товарами</h1>
+    <button class="save-all-btn" onclick="saveAll()">💾 Сохранить все изменения</button>
+</div>
+
+<div class="container">
+    <div id="messageContainer"></div>
+    
+    <div class="settings-bar">
+        <label>🔑 GitHub Token (нужен для сохранения)</label>
+        <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+        <small>Создайте токен в GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic). Нужны права: repo</small>
+    </div>
+    
+    <div class="toolbar">
+        <button class="add-btn" onclick="openModal('new')">+ Добавить товар</button>
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 Поиск по товарам..." oninput="render()">
+    </div>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Фото</th>
+                <th>Название</th>
+                <th>Категория</th>
+                <th>Цена</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody id="productsTable"></tbody>
+    </table>
+    <p style="text-align: center; margin-top: 16px; color: #94a3b8;" id="productCount"></p>
+</div>
+
+<!-- Модальное окно -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <h2 id="modalTitle">Новый товар</h2>
+        <form id="productForm" onsubmit="saveProduct(event)">
+            <input type="hidden" id="productId">
+            
+            <label>Название товара *</label>
+            <input type="text" id="productName" required>
+            
+            <label>Категория *</label>
+            <select id="productCategory" required>
+                <option value="cement">Цемент и смеси</option>
+                <option value="rings">Кольца ЖБИ</option>
+                <option value="tiles">Плитка и брусчатка</option>
+                <option value="bricks">Кирпич и блоки</option>
+                <option value="wood">Пиломатериалы</option>
+                <option value="pipes">Трубы и комплектующие</option>
+            </select>
+            
+            <label>Подкатегория *</label>
+            <input type="text" id="productSubcategory" required>
+            
+            <label>Цена (только число) *</label>
+            <input type="number" id="productPrice" required>
+            
+            <label>Единица измерения</label>
+            <input type="text" id="productUnit" value="шт">
+            
+            <label>Описание</label>
+            <textarea id="productDesc"></textarea>
+            
+            <label>Ссылка на фото</label>
+            <input type="text" id="productImage" placeholder="https://...">
+            
+            <div class="modal-buttons">
+                <button type="button" class="cancel-btn" onclick="closeModal()">Отмена</button>
+                <button type="submit" class="save-btn">💾 Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let products = [];
+    let editMode = 'new';
+    
+    // Загружаем товары из products.json
+    async function loadProducts() {
+        try {
+            const response = await fetch('../products.json');
+            products = await response.json();
+        } catch (e) {
+            showMessage('Не удалось загрузить файл products.json', 'error');
+        }
+        render();
+    }
+    
+    function render() {
+        const tbody = document.getElementById('productsTable');
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = products.filter(p => p.name.toLowerCase().includes(search));
+        
+        document.getElementById('productCount').textContent = `Показано: ${filtered.length} из ${products.length} товаров`;
+        
+        tbody.innerHTML = filtered.map(p => `
+            <tr>
+                <td>${p.image ? `<img src="${p.image}" alt="" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;">` : '📦'}</td>
+                <td>${p.name}</td>
+                <td>${getCategoryName(p.category)}</td>
+                <td>${p.price.toLocaleString()} ₽ / ${p.unit}</td>
+                <td class="actions">
+                    <button class="edit-btn" onclick="openModal('edit', ${p.id})">✏️</button>
+                    <button class="del-btn" onclick="deleteProduct(${p.id})">🗑️</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+    
+    function getCategoryName(cat) {
+        const names = { cement: 'Цемент и смеси', rings: 'Кольца ЖБИ', tiles: 'Плитка и брусчатка', bricks: 'Кирпич и блоки', wood: 'Пиломатериалы', pipes: 'Трубы и комплектующие' };
+        return names[cat] || cat;
+    }
+    
+    function openModal(mode, id = null) {
+        editMode = mode;
+        const modal = document.getElementById('modalOverlay');
+        const title = document.getElementById('modalTitle');
+        
+        if (mode === 'new') {
+            title.textContent = 'Новый товар';
+            document.getElementById('productId').value = '';
+            document.getElementById('productName').value = '';
+            document.getElementById('productCategory').value = 'cement';
+            document.getElementById('productSubcategory').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productUnit').value = 'шт';
+            document.getElementById('productDesc').value = '';
+            document.getElementById('productImage').value = '';
+        } else if (mode === 'edit' && id) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                title.textContent = 'Редактирование: ' + product.name;
+                document.getElementById('productId').value = product.id;
+                document.getElementById('productName').value = product.name;
+                document.getElementById('productCategory').value = product.category;
+                document.getElementById('productSubcategory').value = product.subcategory;
+                document.getElementById('productPrice').value = product.price;
+                document.getElementById('productUnit').value = product.unit;
+                document.getElementById('productDesc').value = product.desc;
+                document.getElementById('productImage').value = product.image;
+            }
+        }
+        
+        modal.classList.add('active');
+    }
+    
+    function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('active');
+    }
+    
+    function saveProduct(event) {
+        event.preventDefault();
+        const id = document.getElementById('productId').value ? parseInt(document.getElementById('productId').value) : Date.now();
+        const product = {
+            id: id,
+            name: document.getElementById('productName').value.trim(),
+            category: document.getElementById('productCategory').value,
+            subcategory: document.getElementById('productSubcategory').value.trim(),
+            price: parseInt(document.getElementById('productPrice').value),
+            unit: document.getElementById('productUnit').value.trim(),
+            desc: document.getElementById('productDesc').value.trim(),
+            image: document.getElementById('productImage').value.trim()
+        };
+        
+        if (editMode === 'new') {
+            products.push(product);
+        } else {
+            const index = products.findIndex(p => p.id === id);
+            if (index !== -1) products[index] = product;
+        }
+        
+        closeModal();
+        render();
+        showMessage('✅ Товар сохранён локально. Нажмите «Сохранить все изменения» чтобы записать на сайт.', 'success');
+    }
+    
+    function deleteProduct(id) {
+        if (!confirm('Удалить этот товар?')) return;
+        products = products.filter(p => p.id !== id);
+        render();
+        showMessage('🗑️ Товар удалён локально. Нажмите «Сохранить все изменения» чтобы записать на сайт.', 'success');
+    }
+    
+    async function saveAll() {
+        const token = document.getElementById('githubToken').value.trim();
+        if (!token) {
+            showMessage('Введите GitHub Token!', 'error');
+            return;
+        }
+        
+        try {
+            // Получаем текущий SHA файла
+            const getResponse = await fetch('https://api.github.com/repos/stroy13/stroy13.github.io/contents/products.json', {
+                headers: { 'Authorization': `token ${token}` }
+            });
+            const getData = await getResponse.json();
+            const sha = getData.sha;
+            
+            // Сохраняем обновлённый JSON
+            const content = btoa(unescape(encodeURIComponent(JSON.stringify(products, null, 2))));
+            const putResponse = await fetch('https://api.github.com/repos/stroy13/stroy13.github.io/contents/products.json', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: 'Обновление товаров через админ-панель',
+                    content: content,
+                    sha: sha
+                })
+            });
+            
+            if (putResponse.ok) {
+                showMessage('✅ Все изменения сохранены на сайт! Через 1-2 минуты они появятся.', 'success');
+            } else {
+                showMessage('Ошибка сохранения. Проверьте токен.', 'error');
+            }
+        } catch (e) {
+            showMessage('Ошибка соединения с GitHub.', 'error');
+        }
+    }
+    
+    function showMessage(text, type) {
+        document.getElementById('messageContainer').innerHTML = `<div class="message ${type}">${text}</div>`;
+        setTimeout(() => document.getElementById('messageContainer').innerHTML = '', 5000);
+    }
+    
+    document.getElementById('modalOverlay').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+    });
+    
+    loadProducts();
+</script>
+</body>
+</html>
