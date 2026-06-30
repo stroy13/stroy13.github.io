@@ -60,6 +60,8 @@
         .settings-bar input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #f1f5f9; font-size: 13px; outline: none; }
         .settings-bar input:focus { border-color: #3b82f6; }
         .settings-bar small { color: #94a3b8; display: block; margin-top: 6px; }
+        
+        .icon-option:hover { border-color: #3b82f6 !important; transform: scale(1.1); }
     </style>
 </head>
 <body>
@@ -133,13 +135,19 @@
 
 <!-- Модальное окно категории -->
 <div class="modal-overlay" id="categoryModal">
-    <div class="modal">
+    <div class="modal" style="max-width: 600px;">
         <h2 id="categoryModalTitle">Новая категория</h2>
         <form id="categoryForm">
             <input type="hidden" id="categoryOldId">
-            <label>Название *</label><input type="text" id="categoryName" required>
-            <label>ID (латиница, без пробелов) *</label><input type="text" id="categoryId" required placeholder="например: insulation">
-            <label>Иконка (Font Awesome)</label><input type="text" id="categoryIcon" placeholder="fa-cube">
+            <label>Название *</label><input type="text" id="categoryName" required placeholder="Например: Утеплители">
+            <label>ID (латиница, без пробелов) *</label><input type="text" id="categoryId" required placeholder="naprimer: utepliteli">
+            <small style="color: #94a3b8; display: block; margin-top: 4px;">Это техническое название, на сайте не видно</small>
+            
+            <label>Выберите иконку:</label>
+            <input type="hidden" id="categoryIcon" value="fa-box">
+            <div id="iconPicker" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-top: 8px; max-height: 200px; overflow-y: auto; background: #0f172a; padding: 12px; border-radius: 12px;"></div>
+            <p style="color: #94a3b8; font-size: 12px; margin-top: 4px;">Выбрано: <span id="selectedIconName">fa-box</span></p>
+            
             <div class="modal-buttons">
                 <button type="button" class="cancel-btn" id="cancelCategoryBtn">Отмена</button>
                 <button type="submit" class="save-btn">💾 Сохранить</button>
@@ -271,6 +279,42 @@
     }
     
     // ===== КАТЕГОРИИ =====
+    var iconList = [
+        'fa-cube', 'fa-cubes', 'fa-box', 'fa-boxes', 'fa-warehouse',
+        'fa-circle', 'fa-draw-polygon', 'fa-shapes', 'fa-th-large',
+        'fa-tree', 'fa-leaf', 'fa-seedling', 'fa-dragon',
+        'fa-border-all', 'fa-th', 'fa-grip-horizontal', 'fa-grip-lines',
+        'fa-hammer', 'fa-tools', 'fa-toolbox', 'fa-wrench',
+        'fa-hard-hat', 'fa-helmet-safety', 'fa-ruler', 'fa-ruler-combined',
+        'fa-paint-roller', 'fa-brush', 'fa-fill-drip', 'fa-tint',
+        'fa-temperature-low', 'fa-temperature-high', 'fa-fire', 'fa-snowflake',
+        'fa-home', 'fa-building', 'fa-industry', 'fa-city',
+        'fa-water', 'fa-bolt', 'fa-wind', 'fa-sun',
+        'fa-truck', 'fa-shipping-fast', 'fa-dolly', 'fa-pallet',
+        'fa-star', 'fa-tag', 'fa-tags', 'fa-check-circle'
+    ];
+
+    function renderIconPicker(selectedIcon) {
+        var picker = document.getElementById('iconPicker');
+        var html = '';
+        for (var i = 0; i < iconList.length; i++) {
+            var ic = iconList[i];
+            var isSelected = (ic === selectedIcon);
+            html += '<button type="button" class="icon-option" data-icon="' + ic + '" style="background: #1e293b; border: 2px solid ' + (isSelected ? '#3b82f6' : '#334155') + '; border-radius: 10px; padding: 10px; cursor: pointer; color: #f1f5f9; font-size: 20px; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"><i class="fas ' + ic + '"></i></button>';
+        }
+        picker.innerHTML = html;
+        document.getElementById('selectedIconName').textContent = selectedIcon;
+        
+        var btns = picker.querySelectorAll('.icon-option');
+        for (var j = 0; j < btns.length; j++) {
+            btns[j].onclick = function() {
+                var icon = this.getAttribute('data-icon');
+                document.getElementById('categoryIcon').value = icon;
+                renderIconPicker(icon);
+            };
+        }
+    }
+
     function renderCategories() {
         var tbody = document.getElementById('categoriesTable');
         document.getElementById('categoryCount').textContent = 'Всего категорий: ' + categories.length;
@@ -307,7 +351,8 @@
             document.getElementById('categoryOldId').value = '';
             document.getElementById('categoryName').value = '';
             document.getElementById('categoryId').value = '';
-            document.getElementById('categoryIcon').value = 'fa-cube';
+            document.getElementById('categoryIcon').value = 'fa-box';
+            renderIconPicker('fa-box');
         } else {
             var c = categories.find(function(x) { return x.id === id; });
             if (c) {
@@ -316,6 +361,7 @@
                 document.getElementById('categoryName').value = c.name;
                 document.getElementById('categoryId').value = c.id;
                 document.getElementById('categoryIcon').value = c.icon;
+                renderIconPicker(c.icon);
             }
         }
         document.getElementById('categoryModal').classList.add('active');
