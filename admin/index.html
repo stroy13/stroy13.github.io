@@ -142,13 +142,16 @@
     let products = [];
     let editMode = 'new';
     
-    // Загружаем товары из products.json
+    // Загружаем товары
     async function loadProducts() {
         try {
-            const response = await fetch('const response = await fetch('https://stroy13.github.io/products.json');');
+            const response = await fetch('https://stroy13.github.io/products.json');
+            if (!response.ok) throw new Error('Файл не найден');
             products = await response.json();
+            showMessage('✅ Загружено ' + products.length + ' товаров', 'success');
         } catch (e) {
-            showMessage('Не удалось загрузить файл products.json', 'error');
+            showMessage('❌ Не удалось загрузить файл products.json. Проверьте, что файл существует в корне сайта.', 'error');
+            console.error(e);
         }
         render();
     }
@@ -156,33 +159,33 @@
     function render() {
         const tbody = document.getElementById('productsTable');
         const search = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = products.filter(p => p.name.toLowerCase().includes(search));
+        const filtered = products.filter(p => p.name && p.name.toLowerCase().includes(search));
         
-        document.getElementById('productCount').textContent = `Показано: ${filtered.length} из ${products.length} товаров`;
+        document.getElementById('productCount').textContent = 'Показано: ' + filtered.length + ' из ' + products.length + ' товаров';
         
-        tbody.innerHTML = filtered.map(p => `
-            <tr>
-                <td>${p.image ? `<img src="${p.image}" alt="" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;">` : '📦'}</td>
-                <td>${p.name}</td>
-                <td>${getCategoryName(p.category)}</td>
-                <td>${p.price.toLocaleString()} ₽ / ${p.unit}</td>
-                <td class="actions">
-                    <button class="edit-btn" onclick="openModal('edit', ${p.id})">✏️</button>
-                    <button class="del-btn" onclick="deleteProduct(${p.id})">🗑️</button>
-                </td>
-            </tr>
-        `).join('');
+        tbody.innerHTML = filtered.map(function(p) {
+            return '<tr>' +
+                '<td>' + (p.image ? '<img src="' + p.image + '" alt="" style="width: 40px; height: 40px; object-fit: cover; border-radius: 8px;">' : '📦') + '</td>' +
+                '<td>' + (p.name || '') + '</td>' +
+                '<td>' + getCategoryName(p.category) + '</td>' +
+                '<td>' + (p.price ? p.price.toLocaleString() : '0') + ' ₽ / ' + (p.unit || 'шт') + '</td>' +
+                '<td class="actions">' +
+                    '<button class="edit-btn" onclick="openModal(\'edit\', ' + p.id + ')">✏️</button>' +
+                    '<button class="del-btn" onclick="deleteProduct(' + p.id + ')">🗑️</button>' +
+                '</td>' +
+            '</tr>';
+        }).join('');
     }
     
     function getCategoryName(cat) {
-        const names = { cement: 'Цемент и смеси', rings: 'Кольца ЖБИ', tiles: 'Плитка и брусчатка', bricks: 'Кирпич и блоки', wood: 'Пиломатериалы', pipes: 'Трубы и комплектующие' };
+        var names = { cement: 'Цемент и смеси', rings: 'Кольца ЖБИ', tiles: 'Плитка и брусчатка', bricks: 'Кирпич и блоки', wood: 'Пиломатериалы', pipes: 'Трубы и комплектующие' };
         return names[cat] || cat;
     }
     
-    function openModal(mode, id = null) {
+    function openModal(mode, id) {
         editMode = mode;
-        const modal = document.getElementById('modalOverlay');
-        const title = document.getElementById('modalTitle');
+        var modal = document.getElementById('modalOverlay');
+        var title = document.getElementById('modalTitle');
         
         if (mode === 'new') {
             title.textContent = 'Новый товар';
@@ -195,7 +198,7 @@
             document.getElementById('productDesc').value = '';
             document.getElementById('productImage').value = '';
         } else if (mode === 'edit' && id) {
-            const product = products.find(p => p.id === id);
+            var product = products.find(function(p) { return p.id === id; });
             if (product) {
                 title.textContent = 'Редактирование: ' + product.name;
                 document.getElementById('productId').value = product.id;
@@ -218,13 +221,13 @@
     
     function saveProduct(event) {
         event.preventDefault();
-        const id = document.getElementById('productId').value ? parseInt(document.getElementById('productId').value) : Date.now();
-        const product = {
+        var id = document.getElementById('productId').value ? parseInt(document.getElementById('productId').value) : Date.now();
+        var product = {
             id: id,
             name: document.getElementById('productName').value.trim(),
             category: document.getElementById('productCategory').value,
             subcategory: document.getElementById('productSubcategory').value.trim(),
-            price: parseInt(document.getElementById('productPrice').value),
+            price: parseInt(document.getElementById('productPrice').value) || 0,
             unit: document.getElementById('productUnit').value.trim(),
             desc: document.getElementById('productDesc').value.trim(),
             image: document.getElementById('productImage').value.trim()
@@ -233,7 +236,7 @@
         if (editMode === 'new') {
             products.push(product);
         } else {
-            const index = products.findIndex(p => p.id === id);
+            var index = products.findIndex(function(p) { return p.id === id; });
             if (index !== -1) products[index] = product;
         }
         
@@ -244,32 +247,32 @@
     
     function deleteProduct(id) {
         if (!confirm('Удалить этот товар?')) return;
-        products = products.filter(p => p.id !== id);
+        products = products.filter(function(p) { return p.id !== id; });
         render();
         showMessage('🗑️ Товар удалён локально. Нажмите «Сохранить все изменения» чтобы записать на сайт.', 'success');
     }
     
     async function saveAll() {
-        const token = document.getElementById('githubToken').value.trim();
+        var token = document.getElementById('githubToken').value.trim();
         if (!token) {
-            showMessage('Введите GitHub Token!', 'error');
+            showMessage('❌ Введите GitHub Token!', 'error');
             return;
         }
         
         try {
             // Получаем текущий SHA файла
-            const getResponse = await fetch('https://api.github.com/repos/stroy13/stroy13.github.io/contents/products.json', {
-                headers: { 'Authorization': `token ${token}` }
+            var getResponse = await fetch('https://api.github.com/repos/stroy13/stroy13.github.io/contents/products.json', {
+                headers: { 'Authorization': 'token ' + token }
             });
-            const getData = await getResponse.json();
-            const sha = getData.sha;
+            var getData = await getResponse.json();
+            var sha = getData.sha;
             
             // Сохраняем обновлённый JSON
-            const content = btoa(unescape(encodeURIComponent(JSON.stringify(products, null, 2))));
-            const putResponse = await fetch('https://api.github.com/repos/stroy13/stroy13.github.io/contents/products.json', {
+            var content = btoa(unescape(encodeURIComponent(JSON.stringify(products, null, 2))));
+            var putResponse = await fetch('https://api.github.com/repos/stroy13/stroy13.github.io/contents/products.json', {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `token ${token}`,
+                    'Authorization': 'token ' + token,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
@@ -282,16 +285,23 @@
             if (putResponse.ok) {
                 showMessage('✅ Все изменения сохранены на сайт! Через 1-2 минуты они появятся.', 'success');
             } else {
-                showMessage('Ошибка сохранения. Проверьте токен.', 'error');
+                var errData = await putResponse.json();
+                showMessage('❌ Ошибка сохранения: ' + (errData.message || 'Проверьте токен'), 'error');
             }
         } catch (e) {
-            showMessage('Ошибка соединения с GitHub.', 'error');
+            showMessage('❌ Ошибка соединения с GitHub. Проверьте токен.', 'error');
+            console.error(e);
         }
     }
     
+    // Делаем saveAll глобальной
+    window.saveAll = saveAll;
+    
     function showMessage(text, type) {
-        document.getElementById('messageContainer').innerHTML = `<div class="message ${type}">${text}</div>`;
-        setTimeout(() => document.getElementById('messageContainer').innerHTML = '', 5000);
+        document.getElementById('messageContainer').innerHTML = '<div class="message ' + type + '">' + text + '</div>';
+        setTimeout(function() {
+            document.getElementById('messageContainer').innerHTML = '';
+        }, 5000);
     }
     
     document.getElementById('modalOverlay').addEventListener('click', function(e) {
