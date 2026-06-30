@@ -8,6 +8,19 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f1f5f9; min-height: 100vh; }
+        
+        /* Экран входа */
+        .login-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: #0f172a; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .login-box { background: #1e293b; padding: 40px; border-radius: 24px; width: 350px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .login-box h2 { color: #f8fafc; margin-bottom: 8px; font-size: 24px; }
+        .login-box p { color: #94a3b8; margin-bottom: 24px; font-size: 14px; }
+        .login-box input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: #f1f5f9; font-size: 16px; margin-bottom: 16px; outline: none; text-align: center; }
+        .login-box input:focus { border-color: #3b82f6; }
+        .login-box button { width: 100%; padding: 14px; border-radius: 12px; border: none; background: #f8fafc; color: #0f172a; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .login-box button:hover { background: #e2e8f0; }
+        .login-error { color: #ef4444; margin-bottom: 12px; font-size: 14px; }
+        
+        /* Админка */
         .topbar { background: #1e293b; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; flex-wrap: wrap; gap: 12px; }
         .topbar h1 { font-size: 20px; color: #f8fafc; }
         .container { max-width: 1300px; margin: 0 auto; padding: 24px; }
@@ -74,6 +87,20 @@
     </style>
 </head>
 <body>
+
+<!-- ===== ЭКРАН ВХОДА ===== -->
+<div class="login-overlay" id="loginOverlay">
+    <div class="login-box">
+        <h2>🔨 СТРОЙ БАЗА</h2>
+        <p>Вход в панель управления</p>
+        <div class="login-error" id="loginError" style="display: none;">Неверный пароль</div>
+        <input type="password" id="loginPassword" placeholder="Пароль" onkeydown="if(event.key==='Enter')checkLogin()">
+        <button onclick="checkLogin()">Войти</button>
+    </div>
+</div>
+
+<!-- ===== АДМИН-ПАНЕЛЬ (скрыта до входа) ===== -->
+<div id="adminContent" style="display: none;">
 
 <div class="topbar">
     <h1>🔨 СТРОЙ БАЗА — Управление</h1>
@@ -170,8 +197,31 @@
     </div>
 </div>
 
+</div><!-- Конец adminContent -->
+
 <script>
 (function() {
+    // ===== ПАРОЛЬ =====
+    var ADMIN_PASSWORD = 'stroy123'; // ← ПОМЕНЯЙ НА СВОЙ ПАРОЛЬ
+    
+    window.checkLogin = function() {
+        var pass = document.getElementById('loginPassword').value;
+        if (pass === ADMIN_PASSWORD) {
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'block';
+            localStorage.setItem('admin_authenticated', 'true');
+            loadData();
+        } else {
+            document.getElementById('loginError').style.display = 'block';
+        }
+    };
+    
+    if (localStorage.getItem('admin_authenticated') === 'true') {
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('adminContent').style.display = 'block';
+    }
+    
+    // ===== АДМИНКА =====
     var products = [];
     var categories = [];
     var editMode = 'new';
@@ -263,14 +313,12 @@
     
     function closeProductModal() { document.getElementById('productModal').classList.remove('active'); }
     
-    // Загрузка фото на GitHub
     var uploadArea = document.getElementById('uploadArea');
     var fileInput = document.getElementById('fileInput');
     var previewImg = document.getElementById('previewImage');
     var uploadProgress = document.getElementById('uploadProgress');
     
     uploadArea.onclick = function() { fileInput.click(); };
-    
     uploadArea.ondragover = function(e) { e.preventDefault(); this.classList.add('dragover'); };
     uploadArea.ondragleave = function() { this.classList.remove('dragover'); };
     uploadArea.ondrop = function(e) { e.preventDefault(); this.classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); };
@@ -278,7 +326,6 @@
     
     function handleFile(file) {
         if (!file || !file.type.match(/image\//)) return;
-        
         var reader = new FileReader();
         reader.onload = function(e) {
             previewImg.src = e.target.result;
@@ -290,45 +337,29 @@
     
     async function uploadToGitHub(file) {
         var token = document.getElementById('githubToken').value.trim();
-        if (!token) { showMessage('❌ Введите GitHub Token для загрузки фото!', 'error'); return; }
-        
+        if (!token) { showMessage('❌ Введите GitHub Token!', 'error'); return; }
         uploadProgress.style.display = 'block';
         uploadProgress.textContent = 'Загрузка фото...';
-        
         var fileName = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9.]/g, '_');
         var reader = new FileReader();
-        
         reader.onload = async function(e) {
             var base64 = e.target.result.split(',')[1];
-            
             try {
                 var putResp = await fetch('https://api.github.com/repos/stroy13/stroy13.github.io/contents/images/' + fileName, {
                     method: 'PUT',
-                    headers: {
-                        'Authorization': 'token ' + token,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: 'Загрузка фото товара',
-                        content: base64
-                    })
+                    headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: 'Загрузка фото товара', content: base64 })
                 });
-                
                 if (putResp.ok) {
                     uploadedImageUrl = 'https://stroy13.github.io/images/' + fileName;
                     document.getElementById('productImage').value = uploadedImageUrl;
                     uploadProgress.textContent = '✅ Фото загружено!';
-                    showMessage('✅ Фото загружено на сайт!', 'success');
+                    showMessage('✅ Фото загружено!', 'success');
                 } else {
                     uploadProgress.textContent = '❌ Ошибка загрузки';
-                    showMessage('❌ Ошибка загрузки фото. Проверьте токен.', 'error');
                 }
-            } catch(e) {
-                uploadProgress.textContent = '❌ Ошибка соединения';
-                showMessage('❌ Ошибка соединения с GitHub.', 'error');
-            }
+            } catch(e) { uploadProgress.textContent = '❌ Ошибка соединения'; }
         };
-        
         reader.readAsDataURL(file);
     }
     
@@ -336,7 +367,6 @@
         e.preventDefault();
         var id = document.getElementById('productId').value ? parseInt(document.getElementById('productId').value) : Date.now();
         var imageUrl = uploadedImageUrl || document.getElementById('productImage').value.trim();
-        
         var product = {
             id: id, name: document.getElementById('productName').value.trim(),
             category: document.getElementById('productCategory').value,
@@ -356,7 +386,6 @@
         if (!confirm('Удалить товар?')) return;
         products = products.filter(function(p) { return p.id !== id; });
         renderProducts();
-        showMessage('🗑️ Товар удалён локально.', 'success');
     }
     
     var iconList = [
@@ -525,13 +554,14 @@
     document.getElementById('categoryModal').onclick = function(e) { if (e.target === this) closeCategoryModal(); };
     document.onkeydown = function(e) { if (e.key === 'Escape') { closeProductModal(); closeCategoryModal(); } };
     
-    // Сохранение токена
     var tokenInput = document.getElementById('githubToken');
     var savedToken = localStorage.getItem('github_token');
     if (savedToken) { tokenInput.value = savedToken; }
     tokenInput.addEventListener('input', function() { localStorage.setItem('github_token', this.value); });
     
-    loadData();
+    if (localStorage.getItem('admin_authenticated') === 'true') {
+        loadData();
+    }
 })();
 </script>
 </body>
