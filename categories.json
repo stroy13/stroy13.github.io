@@ -28,5 +28,10 @@
     "id": "pipes",
     "name": "Трубы и комплектующие",
     "icon": "fa-grip-lines"
+  },
+  {
+    "id": "utepliteli",
+    "name": "Утеплители",
+    "icon": "fa-snowflake"
   }
 ]
