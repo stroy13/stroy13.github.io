@@ -7,12 +7,20 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f1f5f9; min-height: 100vh; }
-        .topbar { background: #1e293b; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; }
+        .topbar { background: #1e293b; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; flex-wrap: wrap; gap: 12px; }
         .topbar h1 { font-size: 20px; color: #f8fafc; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        .container { max-width: 1300px; margin: 0 auto; padding: 24px; }
         .message { padding: 16px 24px; margin: 0 0 20px 0; font-weight: 600; text-align: center; border-radius: 12px; }
         .message.success { background: #065f46; color: #6ee7b7; }
         .message.error { background: #7f1d1d; color: #fca5a5; }
+        
+        .tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 2px solid #334155; }
+        .tab { padding: 12px 24px; background: transparent; border: none; color: #94a3b8; font-size: 15px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+        .tab:hover { color: #f1f5f9; }
+        .tab.active { color: #f8fafc; border-bottom-color: #3b82f6; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
         .add-btn { background: #22c55e; color: white; border: none; padding: 14px 28px; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-bottom: 20px; }
         .add-btn:hover { background: #16a34a; }
         .toolbar { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
@@ -20,6 +28,7 @@
         .search-input:focus { border-color: #3b82f6; }
         .save-all-btn { background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
         .save-all-btn:hover { background: #2563eb; }
+        
         table { width: 100%; border-collapse: collapse; background: #1e293b; border-radius: 16px; overflow: hidden; }
         th { background: #334155; padding: 12px 16px; text-align: left; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #94a3b8; }
         td { padding: 12px 16px; border-bottom: 1px solid #334155; font-size: 14px; }
@@ -30,6 +39,7 @@
         .edit-btn:hover { background: #2563eb; }
         .del-btn { background: #ef4444; }
         .del-btn:hover { background: #dc2626; }
+        
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
         .modal-overlay.active { display: flex; }
         .modal { background: #1e293b; border-radius: 24px; padding: 30px; width: 500px; max-width: 90vw; max-height: 85vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
@@ -44,6 +54,7 @@
         .save-btn:hover { background: #16a34a; }
         .cancel-btn { background: #475569; color: white; }
         .cancel-btn:hover { background: #334155; }
+        
         .settings-bar { background: #1e3a5f; padding: 16px; border-radius: 12px; margin-bottom: 20px; }
         .settings-bar label { color: #93c5fd; font-size: 13px; display: block; margin-bottom: 6px; }
         .settings-bar input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #f1f5f9; font-size: 13px; outline: none; }
@@ -54,76 +65,83 @@
 <body>
 
 <div class="topbar">
-    <h1>🔨 СТРОЙ БАЗА — Управление товарами</h1>
-    <button class="save-all-btn" id="saveAllBtn">💾 Сохранить все изменения</button>
+    <h1>🔨 СТРОЙ БАЗА — Управление</h1>
+    <button class="save-all-btn" id="saveAllBtn">💾 Сохранить всё на сайт</button>
 </div>
 
 <div class="container">
     <div id="messageContainer"></div>
     
     <div class="settings-bar">
-        <label>🔑 GitHub Token (нужен для сохранения)</label>
-        <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-        <small>Создайте токен в GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic). Нужны права: repo</small>
+        <label>🔑 GitHub Token</label>
+        <input type="password" id="githubToken" placeholder="ghp_...">
+        <small>GitHub → Settings → Developer settings → Tokens (classic) → repo</small>
     </div>
     
-    <div class="toolbar">
-        <button class="add-btn" id="addBtn">+ Добавить товар</button>
-        <input type="text" class="search-input" id="searchInput" placeholder="🔍 Поиск по товарам...">
+    <!-- Табы -->
+    <div class="tabs">
+        <button class="tab active" data-tab="products">📦 Товары</button>
+        <button class="tab" data-tab="categories">📂 Категории</button>
     </div>
     
-    <table>
-        <thead>
-            <tr>
-                <th>Фото</th>
-                <th>Название</th>
-                <th>Категория</th>
-                <th>Цена</th>
-                <th>Действия</th>
-            </tr>
-        </thead>
-        <tbody id="productsTable"></tbody>
-    </table>
-    <p style="text-align: center; margin-top: 16px; color: #94a3b8;" id="productCount"></p>
+    <!-- Товары -->
+    <div class="tab-content active" id="tab-products">
+        <div class="toolbar">
+            <button class="add-btn" id="addProductBtn">+ Добавить товар</button>
+            <input type="text" class="search-input" id="searchProducts" placeholder="🔍 Поиск по товарам...">
+        </div>
+        <table>
+            <thead><tr><th>Фото</th><th>Название</th><th>Категория</th><th>Цена</th><th>Действия</th></tr></thead>
+            <tbody id="productsTable"></tbody>
+        </table>
+        <p style="text-align: center; margin-top: 16px; color: #94a3b8;" id="productCount"></p>
+    </div>
+    
+    <!-- Категории -->
+    <div class="tab-content" id="tab-categories">
+        <div class="toolbar">
+            <button class="add-btn" id="addCategoryBtn">+ Добавить категорию</button>
+        </div>
+        <table>
+            <thead><tr><th>Название</th><th>ID (для кода)</th><th>Иконка</th><th>Товаров</th><th>Действия</th></tr></thead>
+            <tbody id="categoriesTable"></tbody>
+        </table>
+        <p style="text-align: center; margin-top: 16px; color: #94a3b8;" id="categoryCount"></p>
+    </div>
 </div>
 
-<!-- Модальное окно -->
-<div class="modal-overlay" id="modalOverlay">
+<!-- Модальное окно товара -->
+<div class="modal-overlay" id="productModal">
     <div class="modal">
-        <h2 id="modalTitle">Новый товар</h2>
+        <h2 id="productModalTitle">Новый товар</h2>
         <form id="productForm">
             <input type="hidden" id="productId">
-            
-            <label>Название товара *</label>
-            <input type="text" id="productName" required>
-            
-            <label>Категория *</label>
-            <select id="productCategory" required>
-                <option value="cement">Цемент и смеси</option>
-                <option value="rings">Кольца ЖБИ</option>
-                <option value="tiles">Плитка и брусчатка</option>
-                <option value="bricks">Кирпич и блоки</option>
-                <option value="wood">Пиломатериалы</option>
-                <option value="pipes">Трубы и комплектующие</option>
-            </select>
-            
-            <label>Подкатегория *</label>
-            <input type="text" id="productSubcategory" required>
-            
-            <label>Цена (только число) *</label>
-            <input type="number" id="productPrice" required>
-            
-            <label>Единица измерения</label>
-            <input type="text" id="productUnit" value="шт">
-            
-            <label>Описание</label>
-            <textarea id="productDesc"></textarea>
-            
-            <label>Ссылка на фото</label>
-            <input type="text" id="productImage" placeholder="https://...">
-            
+            <label>Название *</label><input type="text" id="productName" required>
+            <label>Категория *</label><select id="productCategory" required></select>
+            <label>Подкатегория</label><input type="text" id="productSubcategory">
+            <label>Цена (число) *</label><input type="number" id="productPrice" required>
+            <label>Единица</label><input type="text" id="productUnit" value="шт">
+            <label>Описание</label><textarea id="productDesc"></textarea>
+            <label>Ссылка на фото</label><input type="text" id="productImage" placeholder="https://...">
             <div class="modal-buttons">
-                <button type="button" class="cancel-btn" id="cancelBtn">Отмена</button>
+                <button type="button" class="cancel-btn" id="cancelProductBtn">Отмена</button>
+                <button type="submit" class="save-btn">💾 Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Модальное окно категории -->
+<div class="modal-overlay" id="categoryModal">
+    <div class="modal">
+        <h2 id="categoryModalTitle">Новая категория</h2>
+        <form id="categoryForm">
+            <input type="hidden" id="categoryOldId">
+            <label>Название *</label><input type="text" id="categoryName" required>
+            <label>ID (латиница, без пробелов) *</label><input type="text" id="categoryId" required placeholder="например: insulation">
+            <label>Иконка (Font Awesome)</label><input type="text" id="categoryIcon" placeholder="fa-cube">
+            <div class="modal-buttons">
+                <button type="button" class="cancel-btn" id="cancelCategoryBtn">Отмена</button>
                 <button type="submit" class="save-btn">💾 Сохранить</button>
             </div>
         </form>
@@ -133,107 +151,100 @@
 <script>
 (function() {
     var products = [];
+    var categories = [];
     var editMode = 'new';
     
-    // Загружаем товары
-    async function loadProducts() {
+    // ===== ЗАГРУЗКА ДАННЫХ =====
+    async function loadData() {
         try {
-            var response = await fetch('https://stroy13.github.io/products.json');
-            if (!response.ok) throw new Error('Файл не найден');
-            products = await response.json();
-            showMessage('✅ Загружено ' + products.length + ' товаров', 'success');
-        } catch (e) {
-            showMessage('❌ Не удалось загрузить products.json', 'error');
-            console.error(e);
-        }
-        render();
+            var pr = await fetch('https://stroy13.github.io/products.json');
+            if (pr.ok) products = await pr.json();
+            else showMessage('❌ Не удалось загрузить товары', 'error');
+        } catch(e) { showMessage('❌ Ошибка загрузки товаров', 'error'); }
+        
+        try {
+            var cr = await fetch('https://stroy13.github.io/categories.json');
+            if (cr.ok) categories = await cr.json();
+            else showMessage('❌ Не удалось загрузить категории', 'error');
+        } catch(e) { showMessage('❌ Ошибка загрузки категорий', 'error'); }
+        
+        renderProducts();
+        renderCategories();
     }
     
-    function render() {
+    // ===== ТОВАРЫ =====
+    function renderProducts() {
         var tbody = document.getElementById('productsTable');
-        var search = document.getElementById('searchInput').value.toLowerCase();
-        var filtered = products.filter(function(p) {
-            return p.name && p.name.toLowerCase().indexOf(search) !== -1;
-        });
-        
-        document.getElementById('productCount').textContent = 'Показано: ' + filtered.length + ' из ' + products.length + ' товаров';
+        var search = document.getElementById('searchProducts').value.toLowerCase();
+        var filtered = products.filter(function(p) { return p.name && p.name.toLowerCase().indexOf(search) !== -1; });
+        document.getElementById('productCount').textContent = 'Показано: ' + filtered.length + ' из ' + products.length;
         
         var html = '';
         for (var i = 0; i < filtered.length; i++) {
             var p = filtered[i];
+            var cat = categories.find(function(c) { return c.id === p.category; });
+            var catName = cat ? cat.name : (p.category || '—');
             html += '<tr>';
-            html += '<td>' + (p.image ? '<img src="' + p.image + '" alt="" style="width:40px;height:40px;object-fit:cover;border-radius:8px;">' : '📦') + '</td>';
+            html += '<td>' + (p.image ? '<img src="' + p.image + '" style="width:40px;height:40px;object-fit:cover;border-radius:8px;">' : '📦') + '</td>';
             html += '<td>' + (p.name || '') + '</td>';
-            html += '<td>' + getCategoryName(p.category) + '</td>';
+            html += '<td>' + catName + '</td>';
             html += '<td>' + (p.price ? p.price.toLocaleString() : '0') + ' ₽ / ' + (p.unit || 'шт') + '</td>';
-            html += '<td class="actions">';
-            html += '<button class="edit-btn" data-id="' + p.id + '">✏️</button> ';
-            html += '<button class="del-btn" data-id="' + p.id + '">🗑️</button>';
-            html += '</td>';
+            html += '<td class="actions"><button class="edit-btn" data-edit-product="' + p.id + '">✏️</button> <button class="del-btn" data-del-product="' + p.id + '">🗑️</button></td>';
             html += '</tr>';
         }
         tbody.innerHTML = html;
-        
-        // Привязываем кнопки
-        var editBtns = document.querySelectorAll('.edit-btn');
-        for (var j = 0; j < editBtns.length; j++) {
-            editBtns[j].onclick = function() {
-                openModal('edit', parseInt(this.getAttribute('data-id')));
-            };
+        bindProductButtons();
+    }
+    
+    function bindProductButtons() {
+        var editBtns = document.querySelectorAll('[data-edit-product]');
+        for (var i = 0; i < editBtns.length; i++) {
+            editBtns[i].onclick = function() { openProductModal('edit', parseInt(this.getAttribute('data-edit-product'))); };
         }
-        
-        var delBtns = document.querySelectorAll('.del-btn');
-        for (var k = 0; k < delBtns.length; k++) {
-            delBtns[k].onclick = function() {
-                deleteProduct(parseInt(this.getAttribute('data-id')));
-            };
+        var delBtns = document.querySelectorAll('[data-del-product]');
+        for (var j = 0; j < delBtns.length; j++) {
+            delBtns[j].onclick = function() { deleteProduct(parseInt(this.getAttribute('data-del-product'))); };
         }
     }
     
-    function getCategoryName(cat) {
-        var names = { cement: 'Цемент и смеси', rings: 'Кольца ЖБИ', tiles: 'Плитка и брусчатка', bricks: 'Кирпич и блоки', wood: 'Пиломатериалы', pipes: 'Трубы и комплектующие' };
-        return names[cat] || cat;
-    }
-    
-    function openModal(mode, id) {
+    function openProductModal(mode, id) {
         editMode = mode;
-        var modal = document.getElementById('modalOverlay');
-        var title = document.getElementById('modalTitle');
+        var sel = document.getElementById('productCategory');
+        sel.innerHTML = '';
+        for (var i = 0; i < categories.length; i++) {
+            sel.innerHTML += '<option value="' + categories[i].id + '">' + categories[i].name + '</option>';
+        }
         
         if (mode === 'new') {
-            title.textContent = 'Новый товар';
+            document.getElementById('productModalTitle').textContent = 'Новый товар';
             document.getElementById('productId').value = '';
             document.getElementById('productName').value = '';
-            document.getElementById('productCategory').value = 'cement';
             document.getElementById('productSubcategory').value = '';
             document.getElementById('productPrice').value = '';
             document.getElementById('productUnit').value = 'шт';
             document.getElementById('productDesc').value = '';
             document.getElementById('productImage').value = '';
         } else if (mode === 'edit' && id) {
-            var product = products.find(function(p) { return p.id === id; });
-            if (product) {
-                title.textContent = 'Редактирование: ' + product.name;
-                document.getElementById('productId').value = product.id;
-                document.getElementById('productName').value = product.name;
-                document.getElementById('productCategory').value = product.category;
-                document.getElementById('productSubcategory').value = product.subcategory;
-                document.getElementById('productPrice').value = product.price;
-                document.getElementById('productUnit').value = product.unit;
-                document.getElementById('productDesc').value = product.desc;
-                document.getElementById('productImage').value = product.image;
+            var p = products.find(function(x) { return x.id === id; });
+            if (p) {
+                document.getElementById('productModalTitle').textContent = 'Редактирование: ' + p.name;
+                document.getElementById('productId').value = p.id;
+                document.getElementById('productName').value = p.name;
+                document.getElementById('productCategory').value = p.category;
+                document.getElementById('productSubcategory').value = p.subcategory || '';
+                document.getElementById('productPrice').value = p.price;
+                document.getElementById('productUnit').value = p.unit || 'шт';
+                document.getElementById('productDesc').value = p.desc || '';
+                document.getElementById('productImage').value = p.image || '';
             }
         }
-        
-        modal.classList.add('active');
+        document.getElementById('productModal').classList.add('active');
     }
     
-    function closeModal() {
-        document.getElementById('modalOverlay').classList.remove('active');
-    }
+    function closeProductModal() { document.getElementById('productModal').classList.remove('active'); }
     
-    function saveProduct(event) {
-        event.preventDefault();
+    document.getElementById('productForm').onsubmit = function(e) {
+        e.preventDefault();
         var id = document.getElementById('productId').value ? parseInt(document.getElementById('productId').value) : Date.now();
         var product = {
             id: id,
@@ -245,87 +256,161 @@
             desc: document.getElementById('productDesc').value.trim(),
             image: document.getElementById('productImage').value.trim()
         };
-        
-        if (editMode === 'new') {
-            products.push(product);
-        } else {
-            var index = products.findIndex(function(p) { return p.id === id; });
-            if (index !== -1) products[index] = product;
-        }
-        
-        closeModal();
-        render();
-        showMessage('✅ Товар сохранён локально. Нажмите «Сохранить все изменения».', 'success');
-    }
+        if (editMode === 'new') products.push(product);
+        else { var idx = products.findIndex(function(x) { return x.id === id; }); if (idx !== -1) products[idx] = product; }
+        closeProductModal();
+        renderProducts();
+        showMessage('✅ Товар сохранён локально. Нажмите «Сохранить всё на сайт».', 'success');
+    };
     
     function deleteProduct(id) {
-        if (!confirm('Удалить этот товар?')) return;
+        if (!confirm('Удалить товар?')) return;
         products = products.filter(function(p) { return p.id !== id; });
-        render();
-        showMessage('🗑️ Товар удалён локально. Нажмите «Сохранить все изменения».', 'success');
+        renderProducts();
+        showMessage('🗑️ Товар удалён локально.', 'success');
+    }
+    
+    // ===== КАТЕГОРИИ =====
+    function renderCategories() {
+        var tbody = document.getElementById('categoriesTable');
+        document.getElementById('categoryCount').textContent = 'Всего категорий: ' + categories.length;
+        var html = '';
+        for (var i = 0; i < categories.length; i++) {
+            var c = categories[i];
+            var count = products.filter(function(p) { return p.category === c.id; }).length;
+            html += '<tr>';
+            html += '<td>' + c.name + '</td>';
+            html += '<td><code>' + c.id + '</code></td>';
+            html += '<td><i class="fas ' + c.icon + '"></i></td>';
+            html += '<td>' + count + '</td>';
+            html += '<td class="actions"><button class="edit-btn" data-edit-cat="' + c.id + '">✏️</button> <button class="del-btn" data-del-cat="' + c.id + '">🗑️</button></td>';
+            html += '</tr>';
+        }
+        tbody.innerHTML = html;
+        bindCategoryButtons();
+    }
+    
+    function bindCategoryButtons() {
+        var editBtns = document.querySelectorAll('[data-edit-cat]');
+        for (var i = 0; i < editBtns.length; i++) {
+            editBtns[i].onclick = function() { openCategoryModal('edit', this.getAttribute('data-edit-cat')); };
+        }
+        var delBtns = document.querySelectorAll('[data-del-cat]');
+        for (var j = 0; j < delBtns.length; j++) {
+            delBtns[j].onclick = function() { deleteCategory(this.getAttribute('data-del-cat')); };
+        }
+    }
+    
+    function openCategoryModal(mode, id) {
+        if (mode === 'new') {
+            document.getElementById('categoryModalTitle').textContent = 'Новая категория';
+            document.getElementById('categoryOldId').value = '';
+            document.getElementById('categoryName').value = '';
+            document.getElementById('categoryId').value = '';
+            document.getElementById('categoryIcon').value = 'fa-cube';
+        } else {
+            var c = categories.find(function(x) { return x.id === id; });
+            if (c) {
+                document.getElementById('categoryModalTitle').textContent = 'Редактирование: ' + c.name;
+                document.getElementById('categoryOldId').value = c.id;
+                document.getElementById('categoryName').value = c.name;
+                document.getElementById('categoryId').value = c.id;
+                document.getElementById('categoryIcon').value = c.icon;
+            }
+        }
+        document.getElementById('categoryModal').classList.add('active');
+    }
+    
+    function closeCategoryModal() { document.getElementById('categoryModal').classList.remove('active'); }
+    
+    document.getElementById('categoryForm').onsubmit = function(e) {
+        e.preventDefault();
+        var oldId = document.getElementById('categoryOldId').value;
+        var newCat = {
+            id: document.getElementById('categoryId').value.trim().toLowerCase().replace(/\s+/g, '-'),
+            name: document.getElementById('categoryName').value.trim(),
+            icon: document.getElementById('categoryIcon').value.trim()
+        };
+        if (oldId) {
+            var idx = categories.findIndex(function(x) { return x.id === oldId; });
+            if (idx !== -1) categories[idx] = newCat;
+            if (oldId !== newCat.id) {
+                for (var i = 0; i < products.length; i++) {
+                    if (products[i].category === oldId) products[i].category = newCat.id;
+                }
+                renderProducts();
+            }
+        } else {
+            categories.push(newCat);
+        }
+        closeCategoryModal();
+        renderCategories();
+        showMessage('✅ Категория сохранена локально. Нажмите «Сохранить всё на сайт».', 'success');
+    };
+    
+    function deleteCategory(id) {
+        if (!confirm('Удалить категорию? Товары этой категории останутся, но потеряют привязку.')) return;
+        categories = categories.filter(function(c) { return c.id !== id; });
+        renderCategories();
+        showMessage('🗑️ Категория удалена локально.', 'success');
+    }
+    
+    // ===== СОХРАНЕНИЕ НА GITHUB =====
+    async function saveToGitHub(filename, data) {
+        var token = document.getElementById('githubToken').value.trim();
+        if (!token) { showMessage('❌ Введите GitHub Token!', 'error'); return false; }
+        try {
+            var getResp = await fetch('https://api.github.com/repos/stroy13/stroy13.github.io/contents/' + filename, {
+                headers: { 'Authorization': 'token ' + token }
+            });
+            var getData = await getResp.json();
+            var sha = getData.sha;
+            var content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+            var putResp = await fetch('https://api.github.com/repos/stroy13/stroy13.github.io/contents/' + filename, {
+                method: 'PUT',
+                headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: 'Обновление через админ-панель', content: content, sha: sha })
+            });
+            return putResp.ok;
+        } catch(e) { return false; }
     }
     
     async function saveAll() {
-        var token = document.getElementById('githubToken').value.trim();
-        if (!token) {
-            showMessage('❌ Введите GitHub Token!', 'error');
-            return;
-        }
-        
-        try {
-            var getResponse = await fetch('https://api.github.com/repos/stroy13/stroy13.github.io/contents/products.json', {
-                headers: { 'Authorization': 'token ' + token }
-            });
-            var getData = await getResponse.json();
-            var sha = getData.sha;
-            
-            var content = btoa(unescape(encodeURIComponent(JSON.stringify(products, null, 2))));
-            var putResponse = await fetch('https://api.github.com/repos/stroy13/stroy13.github.io/contents/products.json', {
-                method: 'PUT',
-                headers: {
-                    'Authorization': 'token ' + token,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: 'Обновление товаров через админ-панель',
-                    content: content,
-                    sha: sha
-                })
-            });
-            
-            if (putResponse.ok) {
-                showMessage('✅ Изменения сохранены на сайт!', 'success');
-            } else {
-                var errData = await putResponse.json();
-                showMessage('❌ Ошибка: ' + (errData.message || 'Проверьте токен'), 'error');
-            }
-        } catch (e) {
-            showMessage('❌ Ошибка соединения с GitHub.', 'error');
-            console.error(e);
-        }
+        var ok1 = await saveToGitHub('products.json', products);
+        var ok2 = await saveToGitHub('categories.json', categories);
+        if (ok1 && ok2) showMessage('✅ Всё сохранено на сайт! Через 1-2 минуты изменения появятся.', 'success');
+        else showMessage('❌ Ошибка сохранения. Проверьте токен.', 'error');
     }
     
     function showMessage(text, type) {
         document.getElementById('messageContainer').innerHTML = '<div class="message ' + type + '">' + text + '</div>';
-        setTimeout(function() {
-            document.getElementById('messageContainer').innerHTML = '';
-        }, 5000);
+        setTimeout(function() { document.getElementById('messageContainer').innerHTML = ''; }, 5000);
     }
     
-    // Привязываем события
+    // ===== ПРИВЯЗКА СОБЫТИЙ =====
     document.getElementById('saveAllBtn').onclick = saveAll;
-    document.getElementById('addBtn').onclick = function() { openModal('new'); };
-    document.getElementById('searchInput').oninput = render;
-    document.getElementById('cancelBtn').onclick = closeModal;
-    document.getElementById('productForm').onsubmit = saveProduct;
-    document.getElementById('modalOverlay').onclick = function(e) {
-        if (e.target === document.getElementById('modalOverlay')) closeModal();
-    };
-    document.onkeydown = function(e) {
-        if (e.key === 'Escape') closeModal();
-    };
+    document.getElementById('addProductBtn').onclick = function() { openProductModal('new'); };
+    document.getElementById('addCategoryBtn').onclick = function() { openCategoryModal('new'); };
+    document.getElementById('cancelProductBtn').onclick = closeProductModal;
+    document.getElementById('cancelCategoryBtn').onclick = closeCategoryModal;
+    document.getElementById('searchProducts').oninput = renderProducts;
     
-    loadProducts();
+    // Табы
+    document.querySelectorAll('.tab').forEach(function(tab) {
+        tab.onclick = function() {
+            document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+            document.querySelectorAll('.tab-content').forEach(function(tc) { tc.classList.remove('active'); });
+            this.classList.add('active');
+            document.getElementById('tab-' + this.getAttribute('data-tab')).classList.add('active');
+        };
+    });
+    
+    // Закрытие модалок
+    document.getElementById('productModal').onclick = function(e) { if (e.target === this) closeProductModal(); };
+    document.getElementById('categoryModal').onclick = function(e) { if (e.target === this) closeCategoryModal(); };
+    document.onkeydown = function(e) { if (e.key === 'Escape') { closeProductModal(); closeCategoryModal(); } };
+    
+    loadData();
 })();
 </script>
 </body>
