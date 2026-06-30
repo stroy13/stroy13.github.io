@@ -14,6 +14,7 @@
         .message { padding: 16px 24px; margin: 0 0 20px 0; font-weight: 600; text-align: center; border-radius: 12px; }
         .message.success { background: #065f46; color: #6ee7b7; }
         .message.error { background: #7f1d1d; color: #fca5a5; }
+        .message.info { background: #1e3a5f; color: #93c5fd; }
         
         .tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 2px solid #334155; }
         .tab { padding: 12px 24px; background: transparent; border: none; color: #94a3b8; font-size: 15px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
@@ -63,6 +64,13 @@
         .settings-bar small { color: #94a3b8; display: block; margin-top: 6px; }
         
         .icon-option:hover { transform: scale(1.15); }
+        
+        .upload-area { border: 2px dashed #334155; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s; margin-top: 4px; }
+        .upload-area:hover { border-color: #3b82f6; background: rgba(59, 130, 246, 0.05); }
+        .upload-area.dragover { border-color: #22c55e; background: rgba(34, 197, 94, 0.05); }
+        .upload-area i { font-size: 32px; color: #94a3b8; margin-bottom: 8px; }
+        .upload-area p { color: #94a3b8; font-size: 13px; }
+        .preview-img { max-width: 100%; max-height: 150px; border-radius: 8px; margin-top: 8px; }
     </style>
 </head>
 <body>
@@ -121,7 +129,17 @@
             <label>Цена (число) *</label><input type="number" id="productPrice" required>
             <label>Единица</label><input type="text" id="productUnit" value="шт">
             <label>Описание</label><textarea id="productDesc"></textarea>
-            <label>Ссылка на фото</label><input type="text" id="productImage" placeholder="https://...">
+            
+            <label>Фото товара</label>
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Нажмите или перетащите фото сюда</p>
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            </div>
+            <img id="previewImage" class="preview-img" style="display: none;">
+            <div id="uploadProgress" style="display: none; margin-top: 8px; color: #93c5fd; font-size: 13px;"></div>
+            <input type="text" id="productImage" placeholder="Или вставьте ссылку на фото вручную" style="margin-top: 8px;">
+            
             <div class="modal-buttons">
                 <button type="button" class="cancel-btn" id="cancelProductBtn">Отмена</button>
                 <button type="submit" class="save-btn">💾 Сохранить</button>
@@ -157,6 +175,7 @@
     var products = [];
     var categories = [];
     var editMode = 'new';
+    var uploadedImageUrl = '';
     
     async function loadData() {
         try {
@@ -202,6 +221,11 @@
     
     function openProductModal(mode, id) {
         editMode = mode;
+        uploadedImageUrl = '';
+        document.getElementById('previewImage').style.display = 'none';
+        document.getElementById('uploadProgress').style.display = 'none';
+        document.getElementById('fileInput').value = '';
+        
         var sel = document.getElementById('productCategory');
         sel.innerHTML = '';
         for (var i = 0; i < categories.length; i++) {
@@ -228,6 +252,10 @@
                 document.getElementById('productUnit').value = p.unit || 'шт';
                 document.getElementById('productDesc').value = p.desc || '';
                 document.getElementById('productImage').value = p.image || '';
+                if (p.image) {
+                    document.getElementById('previewImage').src = p.image;
+                    document.getElementById('previewImage').style.display = 'block';
+                }
             }
         }
         document.getElementById('productModal').classList.add('active');
@@ -235,9 +263,80 @@
     
     function closeProductModal() { document.getElementById('productModal').classList.remove('active'); }
     
+    // Загрузка фото на GitHub
+    var uploadArea = document.getElementById('uploadArea');
+    var fileInput = document.getElementById('fileInput');
+    var previewImg = document.getElementById('previewImage');
+    var uploadProgress = document.getElementById('uploadProgress');
+    
+    uploadArea.onclick = function() { fileInput.click(); };
+    
+    uploadArea.ondragover = function(e) { e.preventDefault(); this.classList.add('dragover'); };
+    uploadArea.ondragleave = function() { this.classList.remove('dragover'); };
+    uploadArea.ondrop = function(e) { e.preventDefault(); this.classList.remove('dragover'); handleFile(e.dataTransfer.files[0]); };
+    fileInput.onchange = function() { if (this.files[0]) handleFile(this.files[0]); };
+    
+    function handleFile(file) {
+        if (!file || !file.type.match(/image\//)) return;
+        
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            previewImg.style.display = 'block';
+            uploadToGitHub(file);
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    async function uploadToGitHub(file) {
+        var token = document.getElementById('githubToken').value.trim();
+        if (!token) { showMessage('❌ Введите GitHub Token для загрузки фото!', 'error'); return; }
+        
+        uploadProgress.style.display = 'block';
+        uploadProgress.textContent = 'Загрузка фото...';
+        
+        var fileName = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+        var reader = new FileReader();
+        
+        reader.onload = async function(e) {
+            var base64 = e.target.result.split(',')[1];
+            
+            try {
+                var putResp = await fetch('https://api.github.com/repos/stroy13/stroy13.github.io/contents/images/' + fileName, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': 'token ' + token,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: 'Загрузка фото товара',
+                        content: base64
+                    })
+                });
+                
+                if (putResp.ok) {
+                    uploadedImageUrl = 'https://stroy13.github.io/images/' + fileName;
+                    document.getElementById('productImage').value = uploadedImageUrl;
+                    uploadProgress.textContent = '✅ Фото загружено!';
+                    showMessage('✅ Фото загружено на сайт!', 'success');
+                } else {
+                    uploadProgress.textContent = '❌ Ошибка загрузки';
+                    showMessage('❌ Ошибка загрузки фото. Проверьте токен.', 'error');
+                }
+            } catch(e) {
+                uploadProgress.textContent = '❌ Ошибка соединения';
+                showMessage('❌ Ошибка соединения с GitHub.', 'error');
+            }
+        };
+        
+        reader.readAsDataURL(file);
+    }
+    
     document.getElementById('productForm').onsubmit = function(e) {
         e.preventDefault();
         var id = document.getElementById('productId').value ? parseInt(document.getElementById('productId').value) : Date.now();
+        var imageUrl = uploadedImageUrl || document.getElementById('productImage').value.trim();
+        
         var product = {
             id: id, name: document.getElementById('productName').value.trim(),
             category: document.getElementById('productCategory').value,
@@ -245,7 +344,7 @@
             price: parseInt(document.getElementById('productPrice').value) || 0,
             unit: document.getElementById('productUnit').value.trim(),
             desc: document.getElementById('productDesc').value.trim(),
-            image: document.getElementById('productImage').value.trim()
+            image: imageUrl
         };
         if (editMode === 'new') products.push(product);
         else { var idx = products.findIndex(function(x) { return x.id === id; }); if (idx !== -1) products[idx] = product; }
@@ -426,15 +525,11 @@
     document.getElementById('categoryModal').onclick = function(e) { if (e.target === this) closeCategoryModal(); };
     document.onkeydown = function(e) { if (e.key === 'Escape') { closeProductModal(); closeCategoryModal(); } };
     
-    // Сохранение токена в localStorage
+    // Сохранение токена
     var tokenInput = document.getElementById('githubToken');
     var savedToken = localStorage.getItem('github_token');
-    if (savedToken) {
-        tokenInput.value = savedToken;
-    }
-    tokenInput.addEventListener('input', function() {
-        localStorage.setItem('github_token', this.value);
-    });
+    if (savedToken) { tokenInput.value = savedToken; }
+    tokenInput.addEventListener('input', function() { localStorage.setItem('github_token', this.value); });
     
     loadData();
 })();
