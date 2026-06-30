@@ -648,5 +648,15 @@
     "unit": "шт",
     "desc": "Тройник",
     "image": "https://i.ibb.co/G4gn26yH/image.png"
+  },
+  {
+    "id": 1782811335821,
+    "name": "ОСБ 9мм",
+    "category": "wood",
+    "subcategory": "ОСб",
+    "price": 900,
+    "unit": "шт",
+    "desc": "",
+    "image": ""
   }
 ]
